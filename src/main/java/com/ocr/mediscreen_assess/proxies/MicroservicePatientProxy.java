@@ -15,4 +15,8 @@ import java.util.List;
         @GetMapping(value = "/Patients/{lastname}")
         Patient getPatientByLastname(@PathVariable("lastname") String lastname);
 
+
+
+
+
     }
