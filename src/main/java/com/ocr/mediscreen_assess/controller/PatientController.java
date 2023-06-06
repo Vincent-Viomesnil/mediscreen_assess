@@ -1,9 +1,9 @@
-package controller;
+package com.ocr.mediscreen_assess.controller;
 
-import model.Patient;
+import com.ocr.mediscreen_assess.model.Patient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import service.PatientService;
+import com.ocr.mediscreen_assess.service.PatientService;
 
 import java.util.List;
 
@@ -19,6 +19,9 @@ public class PatientController {
     public List<Patient> patientList() {
         List<Patient> patientList = patientService.findAll();
         return patientList;
+
+//        System.out.println("patientslit +patientList");
+
     }
 
 }

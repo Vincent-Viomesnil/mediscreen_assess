@@ -1,4 +1,4 @@
-package model;
+package com.ocr.mediscreen_assess.model;
 
 import lombok.*;
 
