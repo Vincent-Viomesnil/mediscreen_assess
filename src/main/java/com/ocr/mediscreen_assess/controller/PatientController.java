@@ -14,13 +14,10 @@ public class PatientController {
     @Autowired
     private PatientService patientService;
 
-    //Retrieve patients'list
     @RequestMapping(value = "/Patients", method = RequestMethod.GET)
     public List<Patient> patientList() {
         List<Patient> patientList = patientService.findAll();
         return patientList;
-
-//        System.out.println("patientslit +patientList");
 
     }
 
