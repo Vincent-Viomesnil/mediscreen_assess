@@ -19,6 +19,13 @@ public class Patient {
     private String firstname;
     @NotNull
     private String lastname;
+    @NotNull
+    private Date birthdate;
+    @NotNull
+    private String gender;
+
+    private String address;
+    private String phonenumber;
 
 }
 
