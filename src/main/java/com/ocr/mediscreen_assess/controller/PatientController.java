@@ -3,6 +3,7 @@ package com.ocr.mediscreen_assess.controller;
 import com.ocr.mediscreen_assess.model.Patient;
 import com.ocr.mediscreen_assess.model.PatientHistory;
 import com.ocr.mediscreen_assess.proxies.MicroservicePatientProxy;
+import com.ocr.mediscreen_assess.service.TriggerWordsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +21,12 @@ public class PatientController {
 
     private final MicroservicePatientProxy microservicePatientProxy;
 
+    @Autowired
+    private PatientService patientService;
+
+    @Autowired
+    private TriggerWordsService triggerWordsService;
+
     public PatientController(MicroservicePatientProxy microservicePatientProxy) {
         this.microservicePatientProxy = microservicePatientProxy;
     }
@@ -33,6 +40,13 @@ public class PatientController {
    @GetMapping(value = "Patient/{lastname}")
    Optional<Patient> getPatientByLastname(@Valid @PathVariable("lastname") String lastname){
        Optional<Patient> patient = microservicePatientProxy.getPatientByLastname(lastname);
+        return patient;
+    }
+
+
+    @RequestMapping(value = "Patient", method = RequestMethod.GET)
+    Optional<Patient> getPatientByFirstname(@Valid @RequestParam("firstname") String firstname){
+        Optional<Patient> patient = patientService.getPatientByFirstname(firstname);
         return patient;
     }
 

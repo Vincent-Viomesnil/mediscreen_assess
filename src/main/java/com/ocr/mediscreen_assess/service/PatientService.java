@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import com.ocr.mediscreen_assess.repository.PatientDAO;
 
 import java.util.List;
+import java.util.Optional;
 
 
 @Service
@@ -21,4 +22,8 @@ public class PatientService {
         return patientDAO.findAll();
     }
 
+
+    public Optional<Patient> getPatientByFirstname(String firstname) {
+        return patientDAO.findByFirstname(firstname);
+    }
 }

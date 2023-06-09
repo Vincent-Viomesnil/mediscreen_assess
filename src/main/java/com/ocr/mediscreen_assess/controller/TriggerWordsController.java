@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import com.ocr.mediscreen_assess.service.TriggerWordsService;
 
 
-import java.util.Optional;
+import java.util.List;
 
 @RestController
 public class TriggerWordsController {
@@ -15,7 +15,7 @@ public class TriggerWordsController {
     private TriggerWordsService triggerWordsService;
 
     @RequestMapping(value = "/TriggerWordsList", method = RequestMethod.GET)
-    public TriggerWords patientList() {
+    public List<TriggerWords> patientList() {
         return triggerWordsService.findAll();
 
     }

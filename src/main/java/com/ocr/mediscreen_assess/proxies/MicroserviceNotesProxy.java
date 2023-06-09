@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Optional;
 
 @FeignClient(name = "mediscreen-mdb", url = "localhost:8082")
 public interface MicroserviceNotesProxy {
@@ -26,4 +27,9 @@ public interface MicroserviceNotesProxy {
     @DeleteMapping(value= "/PatHistory/delete/{lastname}")
     PatientHistory deletePatient(@PathVariable String lastname);
 
+//    @GetMapping(value = "/PatHistory/{firstname}")
+//    Optional<PatientHistory> getPatientByFirstname(String firstname);
+
+//    @GetMapping(value = "assess/{firstname}")
+//    Optional<PatientHistory> getPatientByFirstname(@Valid @RequestParam("firstname") String firstname);
 }
