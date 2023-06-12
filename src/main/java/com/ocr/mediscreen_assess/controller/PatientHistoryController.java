@@ -40,38 +40,53 @@ public class PatientHistoryController {
 
 
    //Method which verify if there is 3 triggersWords for a Patient, filter by lastname
+//    @RequestMapping(value = "Assess", method = RequestMethod.GET)
+//    String getPatientByLastname(@Valid @RequestParam("lastname") String lastname){
+//        List<PatientHistory> patient = microserviceNotesProxy.getPatientHistoryByLastname(lastname);
+//        String resultat = "diabetes assessment is: Warning";
+//        if (patient.stream().anyMatch(patientHistory ->
+//                Arrays.stream(patientHistory.getNotes().split("\\s+"))
+//                        .filter(note -> triggerWordsService.findAll() != null)
+//                        .distinct()
+//                        .count() >= 3
+//        )) {
+//                return resultat;
+//            }
+//        return "There is no pb";
+//        }
+
     @RequestMapping(value = "Assess", method = RequestMethod.GET)
     String getPatientByLastname(@Valid @RequestParam("lastname") String lastname){
         List<PatientHistory> patient = microserviceNotesProxy.getPatientHistoryByLastname(lastname);
         String resultat = "diabetes assessment is: Warning";
+        //        if (patient.stream().filter(patientHistory -> patientHistory.getNotes().contains("Poids")).count() == 1) {
         if (patient.stream().anyMatch(patientHistory ->
                 Arrays.stream(patientHistory.getNotes().split("\\s+"))
                         .filter(note -> triggerWordsService.findAll() != null)
-                        .distinct()
-                        .count() >= 3
-        )) {
-                return resultat;
-            }
-        return "There is no pb";
-        }
-
-    //risque limité (Borderline) - Le dossier du patient contient deux déclencheurs et
-    //le patient est âgé de plus de 30 ans,
-    //Patient: Test TestBorderline (age 73) diabetes assessment is: Borderline
-    @RequestMapping(value = "Assess", method = RequestMethod.GET)
-    String getBorderline(@Valid @RequestParam("lastname") String lastname){
-        List<PatientHistory> patient = microserviceNotesProxy.getPatientHistoryByLastname(lastname);
-        String resultat = "diabetes assessment is: Warning";
-        if (patient.stream().anyMatch(patientHistory ->
-                Arrays.stream(patientHistory.getNotes().split("\\s+"))
-                        .filter(note -> triggerWordsService.findAll() != null)
-                        .distinct()
                         .count() >= 3
         )) {
             return resultat;
         }
         return "There is no pb";
     }
+
+    //risque limité (Borderline) - Le dossier du patient contient deux déclencheurs et
+    //le patient est âgé de plus de 30 ans,
+    //Patient: Test TestBorderline (age 73) diabetes assessment is: Borderline
+//    @RequestMapping(value = "Assess", method = RequestMethod.GET)
+//    String getBorderline(@Valid @RequestParam("lastname") String lastname){
+//        List<PatientHistory> patient = microserviceNotesProxy.getPatientHistoryByLastname(lastname);
+//        String resultat = "diabetes assessment is: Warning";
+//        if (patient.stream().anyMatch(patientHistory ->
+//                Arrays.stream(patientHistory.getNotes().split("\\s+"))
+//                        .filter(note -> triggerWordsService.findAll() != null)
+//                        .distinct()
+//                        .count() >= 3
+//        )) {
+//            return resultat;
+//        }
+//        return "There is no pb";
+//    }
 
     @PostMapping(value = "/PatHistory/add")
     public ResponseEntity<Object> addPatient(@RequestBody PatientHistory patientHistory) {

@@ -10,8 +10,8 @@ import java.util.List;
 
 @Repository
 public class TriggerWordsDAO  {
-    public List<TriggerWords> findAll() {
-        List<TriggerWords> triggerWordsList = new ArrayList<>();
+    public TriggerWords findAll() {
+        TriggerWords triggerWordsList = new TriggerWords();
         return triggerWordsList;
     }
 

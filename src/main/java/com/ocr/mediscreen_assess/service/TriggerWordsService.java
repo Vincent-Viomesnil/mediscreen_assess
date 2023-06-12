@@ -13,12 +13,9 @@ public class TriggerWordsService {
     @Autowired
     private TriggerWordsDAO triggerWordsDAO;
 
-    public List<TriggerWords> findAll() {
+    public TriggerWords findAll() {
         return triggerWordsDAO.findAll();
     }
 
-    public List<TriggerWords> findByTriggerListContaining() {
-        return triggerWordsDAO.findAll();
-    }
 
 }
