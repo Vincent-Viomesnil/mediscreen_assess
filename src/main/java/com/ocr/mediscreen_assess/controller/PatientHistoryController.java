@@ -56,19 +56,25 @@ public class PatientHistoryController {
 //        }
 
     @RequestMapping(value = "Assess", method = RequestMethod.GET)
-    String getPatientByLastname(@Valid @RequestParam("lastname") String lastname){
+    String getPatientByLastname(@Valid @RequestParam("lastname") String lastname) {
         List<PatientHistory> patient = microserviceNotesProxy.getPatientHistoryByLastname(lastname);
         String resultat = "diabetes assessment is: Warning";
-        //        if (patient.stream().filter(patientHistory -> patientHistory.getNotes().contains("Poids")).count() == 1) {
-        if (patient.stream().anyMatch(patientHistory ->
-                Arrays.stream(patientHistory.getNotes().split("\\s+"))
-                        .filter(note -> triggerWordsService.findAll() != null)
-                        .count() >= 3
-        )) {
-            return resultat;
+
+        for (PatientHistory patientHistory : patient) {
+            boolean containTriggerWord = triggerWordsService.findAll().getTriggerList().stream()
+                    .anyMatch(trigger -> patientHistory.getNotes().contains(trigger));
+            //        if (patient.stream().filter(patientHistory -> patientHistory.getNotes().contains("Poids")).count() == 1) {
+            if (containTriggerWord) {
+                System.out.println("triggerWordsService.findAll(): " + triggerWordsService.findAll().toString());
+                return resultat;
+            }
         }
-        return "There is no pb";
-    }
+            return "There is no pb";
+        }
+
+
+
+
 
     //risque limité (Borderline) - Le dossier du patient contient deux déclencheurs et
     //le patient est âgé de plus de 30 ans,
