@@ -24,6 +24,7 @@ public class PatientHistoryController {
 
     private final MicroserviceNotesProxy microserviceNotesProxy;
     private final MicroservicePatientProxy microservicePatientProxy;
+
     public PatientHistoryController(MicroserviceNotesProxy microserviceNotesProxy, MicroservicePatientProxy microservicePatientProxy) {
         this.microserviceNotesProxy = microserviceNotesProxy;
         this.microservicePatientProxy = microservicePatientProxy;
@@ -43,7 +44,7 @@ public class PatientHistoryController {
 //    }
 
 
-   //Method which verify if there is 3 triggersWords for a Patient, filter by lastname
+    //Method which verify if there is 3 triggersWords for a Patient, filter by lastname
 //    @RequestMapping(value = "Assess", method = RequestMethod.GET)
 //    String getPatientByLastname(@Valid @RequestParam("lastname") String lastname){
 //        List<PatientHistory> patient = microserviceNotesProxy.getPatientHistoryByLastname(lastname);
@@ -63,18 +64,96 @@ public class PatientHistoryController {
     String getPatientByLastname(@Valid @RequestParam("lastname") String lastname) {
         List<PatientHistory> patientHistoryList = microserviceNotesProxy.getPatientHistoryByLastname(lastname);
         Optional<Patient> patientList = microservicePatientProxy.getPatientByLastname(lastname);
+        String riskLevel = "Unknown"; // Niveau de risque initial par défaut
 
         for (PatientHistory patientHistory : patientHistoryList) {
             boolean containTriggerWord = triggerWordsService.findAll().getTriggerList().stream()
-                    .anyMatch(trigger -> patientHistory.getNotes().contains(trigger));
-            //        if (patient.stream().filter(patientHistory -> patientHistory.getNotes().contains("Poids")).count() == 1) {
+                    .noneMatch(trigger -> patientHistory.getNotes().contains(trigger));
+            boolean borderline = triggerWordsService.findAll().getTriggerList().stream()
+                    .filter(trigger -> patientHistory.getNotes().contains(trigger)).count() == 2;
+            boolean danger = triggerWordsService.findAll().getTriggerList().stream()
+                    .filter(trigger -> patientHistory.getNotes().contains(trigger)).count() == 2;
             if (containTriggerWord) {
-               return "diabetes assessment not good : To check";
+                riskLevel = "None";
+                break; // Aucun risque trouvé, pas besoin de continuer la boucle
+            } else if (borderline) {
+                riskLevel = "Borderline";
+            } else if (danger) {
+                riskLevel = "In Danger";
             }
         }
-        return patientList.get().getFirstname() +" "+ patientList.get().getLastname()+" (age "+ getAge(lastname)+
-                ") diabetes assessment is : None";
+
+        String assessment;
+        switch (riskLevel) {
+            case "None":
+                assessment = "None";
+                break;
+            case "Borderline":
+                assessment = "Borderline";
+                break;
+            case "In Danger":
+                assessment = "Danger";
+                break;
+            case "Early onset":
+                assessment = "Early onset";
+                break;
+            default:
+                assessment = "Unknown";
+                break;
         }
+
+        if (assessment.equals("None")) {
+            return patientList.get().getFirstname() + " " + patientList.get().getLastname() + " (age " + getAge(lastname) +
+                    ") diabetes assessment is: None";
+        } else if (assessment.equals("Borderline")) {
+            return patientList.get().getFirstname() + " " + patientList.get().getLastname() + " (age " + getAge(lastname) +
+                    ") diabetes assessment is: Borderline";
+        } else if (assessment.equals("Danger")) {
+            return patientList.get().getFirstname() + " " + patientList.get().getLastname() + " (age " + getAge(lastname) +
+                    ") diabetes assessment is: in Danger";
+        }
+
+        return riskLevel;
+    }
+
+
+
+
+//    @RequestMapping(value = "Assess", method = RequestMethod.GET)
+//    String getPatientByLastname(@Valid @RequestParam("lastname") String lastname) {
+//        List<PatientHistory> patientHistoryList = microserviceNotesProxy.getPatientHistoryByLastname(lastname);
+//        Optional<Patient> patientList = microservicePatientProxy.getPatientByLastname(lastname);
+//
+//        for (PatientHistory patientHistory : patientHistoryList) {
+//            String riskLevel = "riskLevel";
+//            switch (riskLevel) {
+//                case "None":
+//                    boolean containTriggerWord = triggerWordsService.findAll().getTriggerList().stream()
+//                            .noneMatch(trigger -> patientHistory.getNotes().contains(trigger));
+//                    return patientList.get().getFirstname() + " " + patientList.get().getLastname() + " (age " + getAge(lastname) +
+//                            ") diabetes assessment is : None";
+//                break;
+//                case "Borderline":
+//                    // Traitement pour risque limité
+//                    break;
+//                case "In Danger":
+//                    // Traitement pour danger
+//                    break;
+//                case "Early onset":
+//                    // Traitement pour apparition précoce
+//                    break;
+//                default:
+//                    // Traitement par défaut si le niveau de risque ne correspond à aucun des cas précédents
+//                    break;
+//
+//
+//                //        if (patient.stream().filter(patientHistory -> patientHistory.getNotes().contains("Poids")).count() == 1) {
+//
+//            }
+//
+//        }
+//    }
+
 
     @GetMapping(value = "Assess/id/{patId}")
     String getPatientById(@Valid @PathVariable Long patId) {
@@ -88,12 +167,9 @@ public class PatientHistoryController {
                 return "diabetes assessment not good : To check";
             }
         }
-        return patientList.get().getFirstname() +" "+ patientList.get().getLastname()+" (age "+ getAge(patientList.get().getLastname())+
+        return patientList.get().getFirstname() + " " + patientList.get().getLastname() + " (age " + getAge(patientList.get().getLastname()) +
                 ") diabetes assessment is : None";
     }
-
-
-
 
 
     //risque limité (Borderline) - Le dossier du patient contient deux déclencheurs et
@@ -121,13 +197,13 @@ public class PatientHistoryController {
     }
 
     @PutMapping(value = "/PatHistory/update/{lastname}")
-    PatientHistory updatePatient(@PathVariable String lastname, @RequestBody PatientHistory patientToUpdate){
-        PatientHistory patientHistory= microserviceNotesProxy.updatePatient(lastname, patientToUpdate);
+    PatientHistory updatePatient(@PathVariable String lastname, @RequestBody PatientHistory patientToUpdate) {
+        PatientHistory patientHistory = microserviceNotesProxy.updatePatient(lastname, patientToUpdate);
         return patientHistory;
     }
 
-    @DeleteMapping(value= "/PatHistory/delete/{lastname}")
-    PatientHistory deletePatient(@PathVariable String lastname){
+    @DeleteMapping(value = "/PatHistory/delete/{lastname}")
+    PatientHistory deletePatient(@PathVariable String lastname) {
         PatientHistory patientHistory = microserviceNotesProxy.deletePatient(lastname);
         return patientHistory;
     }
