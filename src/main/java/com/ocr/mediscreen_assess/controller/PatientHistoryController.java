@@ -3,13 +3,13 @@ package com.ocr.mediscreen_assess.controller;
 import com.ocr.mediscreen_assess.model.Patient;
 import com.ocr.mediscreen_assess.model.PatientHistory;
 import com.ocr.mediscreen_assess.proxies.MicroserviceNotesProxy;
+import com.ocr.mediscreen_assess.proxies.MicroservicePatientProxy;
 import com.ocr.mediscreen_assess.service.TriggerWordsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -21,10 +21,12 @@ public class PatientHistoryController {
     private TriggerWordsService triggerWordsService;
 
     private final MicroserviceNotesProxy microserviceNotesProxy;
-
-    public PatientHistoryController(MicroserviceNotesProxy microserviceNotesProxy) {
+    private final MicroservicePatientProxy microservicePatientProxy;
+    public PatientHistoryController(MicroserviceNotesProxy microserviceNotesProxy, MicroservicePatientProxy microservicePatientProxy) {
         this.microserviceNotesProxy = microserviceNotesProxy;
+        this.microservicePatientProxy = microservicePatientProxy;
     }
+
 
     @RequestMapping("/PatHistory")
     public List<PatientHistory> patientHistoryList() {
@@ -57,20 +59,37 @@ public class PatientHistoryController {
 
     @RequestMapping(value = "Assess", method = RequestMethod.GET)
     String getPatientByLastname(@Valid @RequestParam("lastname") String lastname) {
-        List<PatientHistory> patient = microserviceNotesProxy.getPatientHistoryByLastname(lastname);
-        String resultat = "diabetes assessment is: Warning";
+        List<PatientHistory> patientHistoryList = microserviceNotesProxy.getPatientHistoryByLastname(lastname);
+        Optional<Patient> patientList = microservicePatientProxy.getPatientByLastname(lastname);
 
-        for (PatientHistory patientHistory : patient) {
+        for (PatientHistory patientHistory : patientHistoryList) {
             boolean containTriggerWord = triggerWordsService.findAll().getTriggerList().stream()
                     .anyMatch(trigger -> patientHistory.getNotes().contains(trigger));
             //        if (patient.stream().filter(patientHistory -> patientHistory.getNotes().contains("Poids")).count() == 1) {
             if (containTriggerWord) {
-                System.out.println("triggerWordsService.findAll(): " + triggerWordsService.findAll().toString());
-                return resultat;
+               return "diabetes assessment not good : To check";
             }
         }
-            return "There is no pb";
+        return patientList.get().getFirstname() +" "+ patientList.get().getLastname()+" "+
+                "diabetes assessment is : None";
         }
+
+//    @RequestMapping(value = "Assess", method = RequestMethod.GET)
+//    String getPatientByLastname(@Valid @RequestParam("patId") Long patId) {
+//        List<PatientHistory> patientHistoryList = microserviceNotesProxy.getPatientHistoryById(patId);
+//        Optional<Patient> patientList = microservicePatientProxy.getPatientById(patId);
+//
+//        for (PatientHistory patientHistory : patientHistoryList) {
+//            boolean containTriggerWord = triggerWordsService.findAll().getTriggerList().stream()
+//                    .anyMatch(trigger -> patientHistory.getNotes().contains(trigger));
+//            //        if (patient.stream().filter(patientHistory -> patientHistory.getNotes().contains("Poids")).count() == 1) {
+//            if (containTriggerWord) {
+//                return "diabetes assessment not good : To check";
+//            }
+//        }
+//        return patientList.get().getFirstname() +" "+ patientList.get().getLastname()+" "+
+//                "diabetes assessment is : None";
+//    }
 
 
 
