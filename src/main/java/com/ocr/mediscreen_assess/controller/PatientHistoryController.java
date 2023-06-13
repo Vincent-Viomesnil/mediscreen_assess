@@ -10,6 +10,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.time.*;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -70,8 +72,8 @@ public class PatientHistoryController {
                return "diabetes assessment not good : To check";
             }
         }
-        return patientList.get().getFirstname() +" "+ patientList.get().getLastname()+" "+
-                "diabetes assessment is : None";
+        return patientList.get().getFirstname() +" "+ patientList.get().getLastname()+" (age "+ getAge(lastname)+
+                ") diabetes assessment is : None";
         }
 
     @GetMapping(value = "Assess/id/{patId}")
@@ -86,8 +88,8 @@ public class PatientHistoryController {
                 return "diabetes assessment not good : To check";
             }
         }
-        return patientList.get().getFirstname() +" "+ patientList.get().getLastname()+" "+
-                "diabetes assessment is : None";
+        return patientList.get().getFirstname() +" "+ patientList.get().getLastname()+" (age "+ getAge(patientList.get().getLastname())+
+                ") diabetes assessment is : None";
     }
 
 
@@ -130,4 +132,12 @@ public class PatientHistoryController {
         return patientHistory;
     }
 
+
+    public Integer getAge(String lastname) {
+        Optional<Patient> patient = microservicePatientProxy.getPatientByLastname(lastname);
+        LocalDate birthdate = patient.get().getBirthdate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        LocalDate now = LocalDate.now();
+        Period period = Period.between(birthdate, now);
+        return period.getYears();
+    }
 }
