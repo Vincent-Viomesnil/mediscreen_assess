@@ -14,7 +14,7 @@ import java.util.Optional;
         @GetMapping(value = "/Patients")
         List<Patient> patientList();
 
-        @GetMapping(value = "/Patient/{lastname}")
+        @GetMapping(value = "/Patient/lastname/{lastname}")
         Optional<Patient> getPatientByLastname(@Valid @PathVariable("lastname") String lastname);
 
         @PostMapping(value = "/Patient/add")
@@ -25,4 +25,7 @@ import java.util.Optional;
 
         @DeleteMapping(value="/Patient/delete/{lastname}")
         Patient deletePatient(@PathVariable String lastname);
-    }
+
+        @GetMapping(value = "Patient/id/{Id}")
+        Optional<Patient> getPatientById(@PathVariable Long Id);
+}

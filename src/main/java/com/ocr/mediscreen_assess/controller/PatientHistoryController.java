@@ -74,22 +74,21 @@ public class PatientHistoryController {
                 "diabetes assessment is : None";
         }
 
-//    @RequestMapping(value = "Assess", method = RequestMethod.GET)
-//    String getPatientByLastname(@Valid @RequestParam("patId") Long patId) {
-//        List<PatientHistory> patientHistoryList = microserviceNotesProxy.getPatientHistoryById(patId);
-//        Optional<Patient> patientList = microservicePatientProxy.getPatientById(patId);
-//
-//        for (PatientHistory patientHistory : patientHistoryList) {
-//            boolean containTriggerWord = triggerWordsService.findAll().getTriggerList().stream()
-//                    .anyMatch(trigger -> patientHistory.getNotes().contains(trigger));
-//            //        if (patient.stream().filter(patientHistory -> patientHistory.getNotes().contains("Poids")).count() == 1) {
-//            if (containTriggerWord) {
-//                return "diabetes assessment not good : To check";
-//            }
-//        }
-//        return patientList.get().getFirstname() +" "+ patientList.get().getLastname()+" "+
-//                "diabetes assessment is : None";
-//    }
+    @GetMapping(value = "Assess/id/{patId}")
+    String getPatientById(@Valid @PathVariable Long patId) {
+        List<PatientHistory> patientHistoryList = microserviceNotesProxy.getPatientByPatId(patId);
+        Optional<Patient> patientList = microservicePatientProxy.getPatientById(patId);
+
+        for (PatientHistory patientHistory : patientHistoryList) {
+            boolean containTriggerWord = triggerWordsService.findAll().getTriggerList().stream()
+                    .anyMatch(trigger -> patientHistory.getNotes().contains(trigger));
+            if (containTriggerWord) {
+                return "diabetes assessment not good : To check";
+            }
+        }
+        return patientList.get().getFirstname() +" "+ patientList.get().getLastname()+" "+
+                "diabetes assessment is : None";
+    }
 
 
 
