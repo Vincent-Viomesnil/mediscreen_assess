@@ -62,26 +62,26 @@ public class PatientHistoryController {
 
     @RequestMapping(value = "Assess", method = RequestMethod.GET)
     String getPatientByLastname(@Valid @RequestParam("lastname") String lastname) {
-        List<PatientHistory> patientHistoryList = microserviceNotesProxy.getPatientHistoryByLastname(lastname);
+        PatientHistory patientHistoryList = microserviceNotesProxy.getPatientHistoryByLastname(lastname);
         Optional<Patient> patientList = microservicePatientProxy.getPatientByLastname(lastname);
         String riskLevel = "Unknown"; // Niveau de risque initial par défaut
 
-        for (PatientHistory patientHistory : patientHistoryList) {
             boolean containTriggerWord = triggerWordsService.findAll().getTriggerList().stream()
-                    .noneMatch(trigger -> patientHistory.getNotes().contains(trigger));
+                    .noneMatch(trigger -> patientHistoryList.getNotes().contains(trigger));
             boolean borderline = triggerWordsService.findAll().getTriggerList().stream()
-                    .filter(trigger -> patientHistory.getNotes().contains(trigger)).count() == 2;
+                    .filter(trigger -> patientHistoryList.getNotes().contains(trigger))
+                    .distinct().count() == 2;
             boolean danger = triggerWordsService.findAll().getTriggerList().stream()
-                    .filter(trigger -> patientHistory.getNotes().contains(trigger)).count() == 2;
+                    .filter(trigger -> patientHistoryList.getNotes().contains(trigger)).count() == 3;
+
             if (containTriggerWord) {
                 riskLevel = "None";
-                break; // Aucun risque trouvé, pas besoin de continuer la boucle
             } else if (borderline) {
                 riskLevel = "Borderline";
             } else if (danger) {
                 riskLevel = "In Danger";
             }
-        }
+
 
         String assessment;
         switch (riskLevel) {
@@ -92,11 +92,11 @@ public class PatientHistoryController {
                 assessment = "Borderline";
                 break;
             case "In Danger":
-                assessment = "Danger";
+                assessment = "In Danger";
                 break;
-            case "Early onset":
-                assessment = "Early onset";
-                break;
+//            case "Early onset":
+//                assessment = "Early onset";
+//                break;
             default:
                 assessment = "Unknown";
                 break;
@@ -108,14 +108,71 @@ public class PatientHistoryController {
         } else if (assessment.equals("Borderline")) {
             return patientList.get().getFirstname() + " " + patientList.get().getLastname() + " (age " + getAge(lastname) +
                     ") diabetes assessment is: Borderline";
-        } else if (assessment.equals("Danger")) {
+        } else if (assessment.equals("In Danger")) {
             return patientList.get().getFirstname() + " " + patientList.get().getLastname() + " (age " + getAge(lastname) +
-                    ") diabetes assessment is: in Danger";
+                    ") diabetes assessment is: In Danger";
         }
 
         return riskLevel;
     }
 
+//    @RequestMapping(value = "Assess", method = RequestMethod.GET)
+//    String getPatientByLastname(@Valid @RequestParam("lastname") String lastname) {
+//        List<PatientHistory> patientHistoryList = microserviceNotesProxy.getPatientHistoryByLastname(lastname);
+//        Optional<Patient> patientList = microservicePatientProxy.getPatientByLastname(lastname);
+//        String riskLevel = "Unknown"; // Niveau de risque initial par défaut
+//
+//
+//        boolean containTriggerWord = triggerWordsService.findAll().getTriggerList().stream()
+//                .noneMatch(trigger -> patientHistoryList.getNotes().contains(trigger));
+//        boolean borderline = triggerWordsService.findAll().getTriggerList().stream()
+//                .filter(trigger -> patientHistoryList.get(0).getNotes().contains(trigger))
+//                .distinct().count() == 2;
+//        boolean danger = triggerWordsService.findAll().getTriggerList().stream()
+//                .filter(trigger -> patientHistoryList.get(0).getNotes().contains(trigger)).count() > 2;
+//
+//        if (containTriggerWord) {
+//            riskLevel = "None";
+//        } else if (borderline) {
+//            riskLevel = "Borderline";
+//        } else if (danger) {
+//            riskLevel = "In Danger";
+//        }
+//
+//        String assessment;
+//        switch (riskLevel) {
+//            case "None":
+//                assessment = "None";
+//                break;
+//            case "Borderline":
+//                assessment = "Borderline";
+//                break;
+//            case "In Danger":
+//                assessment = "Danger";
+//                break;
+////            case "Early onset":
+////                assessment = "Early onset";
+////                break;
+//            default:
+//                assessment = "Unknown";
+//                break;
+//        }
+//
+//        if (assessment.equals("None")) {
+//            return patientList.get().getFirstname() + " " + patientList.get().getLastname() + " (age " + getAge(lastname) +
+//                    ") diabetes assessment is: None";
+//        } else if (assessment.equals("BorderLine")) {
+//            return patientList.get().getFirstname() + " " + patientList.get().getLastname() + " (age " + getAge(lastname) +
+//                    ") diabetes assessment is: BorderLine";
+//            } else if (assessment.equals("Danger")) {
+//            return patientList.get().getFirstname() + " " + patientList.get().getLastname() + " (age " + getAge(lastname) +
+//                    ") diabetes assessment is: Danger";
+//        }
+//        return riskLevel;
+//    }
+
+// Ferguson == unknown. TestNone = None
+    // Rees == None etBailey aussi
 
 
 
