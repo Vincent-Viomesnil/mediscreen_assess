@@ -31,7 +31,7 @@ public class PatientController {
         this.microservicePatientProxy = microservicePatientProxy;
     }
 
-    @RequestMapping("/Patients")
+    @RequestMapping(value="/Patients", method = RequestMethod.GET)
     public List<Patient> getPatientList() {
         List<Patient> patientList = microservicePatientProxy.patientList();
         return patientList;

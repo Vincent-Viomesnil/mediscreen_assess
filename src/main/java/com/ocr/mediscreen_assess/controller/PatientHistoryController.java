@@ -31,7 +31,7 @@ public class PatientHistoryController {
     }
 
 
-    @RequestMapping("/PatHistory")
+    @RequestMapping(value="/PatHistoryList", method = RequestMethod.GET)
     public List<PatientHistory> patientHistoryList() {
         List<PatientHistory> patientList = microserviceNotesProxy.patientHistoryList();
         return patientList;

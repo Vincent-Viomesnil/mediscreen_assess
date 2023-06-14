@@ -12,7 +12,7 @@ import java.util.Optional;
 
 @FeignClient(name = "mediscreen-mdb", url = "localhost:8082")
 public interface MicroserviceNotesProxy {
-    @GetMapping(value = "/PatHistory")
+    @GetMapping(value = "/PatHistoryList")
     List<PatientHistory> patientHistoryList();
 
     @GetMapping(value = "/PatHistory/lastname/{lastname}")
