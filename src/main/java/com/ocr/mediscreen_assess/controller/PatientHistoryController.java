@@ -46,8 +46,8 @@ public class PatientHistoryController {
 
 
     @GetMapping(value = "Assess/id/{patId}")
-    String getPatientById(@Valid @PathVariable Long patId) {
-       return patientHistoryService.getPatientById(patId);
+    String getAssessmentById(@Valid @PathVariable Long patId) {
+       return patientHistoryService.getAssessmentById(patId);
     }
 
 

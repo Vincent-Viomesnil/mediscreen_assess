@@ -28,7 +28,7 @@ public interface MicroserviceNotesProxy {
     PatientHistory deletePatient(@PathVariable String lastname);
 
     @GetMapping(value = "/PatHistory/id/{patId}")
-    List<PatientHistory> getPatientByPatId(@PathVariable Long patId);
+    PatientHistory getPatientByPatId(@PathVariable Long patId);
 
 //    @GetMapping(value = "/PatHistory/{firstname}")
 //    Optional<PatientHistory> getPatientByFirstname(String firstname);
