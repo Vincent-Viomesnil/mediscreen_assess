@@ -38,6 +38,7 @@ public class PatientHistoryService {
         List<PatientHistory> patientList = microserviceNotesProxy.patientHistoryList();
         return patientList;
     }
+
     public String getAssessmentByLastname(String lastname) {
         PatientHistory patientHistory = microserviceNotesProxy.getPatientHistoryByLastname(lastname);
         Optional<Patient> patientList = microservicePatientProxy.getPatientByLastname(lastname);
@@ -48,9 +49,22 @@ public class PatientHistoryService {
         boolean containTriggerWord = triggerWordsService.findAll().getTriggerList().stream()
                 .noneMatch(trigger -> patientHistory.getNotes().contains(trigger));
         boolean borderline = triggerWordsService.findAll().getTriggerList().stream()
-                .filter(trigger -> patientHistory.getNotes().contains(trigger)).count() == 2;
-        boolean danger = triggerWordsService.findAll().getTriggerList().stream()
-                .filter(trigger -> patientHistory.getNotes().contains(trigger)).count() == 3;
+                .filter(trigger -> patientHistory.getNotes().contains(trigger)).count() == 2 && (getAge(lastname)) > 30;
+        boolean danger =
+                ((getAge(lastname) < 30) &&
+                        (patientList.get().getGender().equals("M")
+                                &&
+                                triggerWordsService.findAll().getTriggerList().stream()
+                                        .filter(trigger -> patientHistory.getNotes().contains(trigger)).count() == 3)
+                        ||
+                        (patientList.get().getGender().equals("F")
+                                &&
+                                triggerWordsService.findAll().getTriggerList().stream()
+                                        .filter(trigger -> patientHistory.getNotes().contains(trigger)).count() == 4))
+                        ||
+                        ((getAge(lastname) > 30) && (triggerWordsService.findAll().getTriggerList().stream()
+                                .filter(trigger -> patientHistory.getNotes().contains(trigger)).count() == 6));
+
 
         if (containTriggerWord) {
             riskLevel = "None";
@@ -76,7 +90,7 @@ public class PatientHistoryService {
         boolean containTriggerWord = triggerWordsService.findAll().getTriggerList().stream()
                 .noneMatch(trigger -> patientHistory.getNotes().contains(trigger));
         boolean borderline = triggerWordsService.findAll().getTriggerList().stream()
-                .filter(trigger -> patientHistory.getNotes().contains(trigger)).count() == 2;
+                .filter(trigger -> patientHistory.getNotes().contains(trigger)).count() == 2 || getAge(patientHistory.getLastname()) < 30;
         boolean danger = triggerWordsService.findAll().getTriggerList().stream()
                 .filter(trigger -> patientHistory.getNotes().contains(trigger)).count() == 3;
 
@@ -91,7 +105,6 @@ public class PatientHistoryService {
 
         return diabetesAssessment(patient.get(), riskLevel);
     }
-
 
 
     private String diabetesAssessment(Patient patient, String riskLevel) {
