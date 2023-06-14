@@ -54,16 +54,17 @@ public class PatientHistoryService {
                 ") diabetes assessment is : None";
     }
 
-    public String getPatientByLastname(String lastname) {
+    public String getAssessmentByLastname(String lastname) {
         PatientHistory patientHistoryList = microserviceNotesProxy.getPatientHistoryByLastname(lastname);
         Optional<Patient> patientList = microservicePatientProxy.getPatientByLastname(lastname);
         String riskLevel = "Unknown"; // Niveau de risque initial par défaut
 
+        // Attention aux triggerWords français et anglais.
+
         boolean containTriggerWord = triggerWordsService.findAll().getTriggerList().stream()
                 .noneMatch(trigger -> patientHistoryList.getNotes().contains(trigger));
         boolean borderline = triggerWordsService.findAll().getTriggerList().stream()
-                .filter(trigger -> patientHistoryList.getNotes().contains(trigger))
-                .distinct().count() == 2;
+                .filter(trigger -> patientHistoryList.getNotes().contains(trigger)).count() == 2;
         boolean danger = triggerWordsService.findAll().getTriggerList().stream()
                 .filter(trigger -> patientHistoryList.getNotes().contains(trigger)).count() == 3;
 
@@ -76,37 +77,13 @@ public class PatientHistoryService {
         }
 
 
-        String assessment;
-        switch (riskLevel) {
-            case "None":
-                assessment = "None";
-                break;
-            case "Borderline":
-                assessment = "Borderline";
-                break;
-            case "In Danger":
-                assessment = "In Danger";
-                break;
-//            case "Early onset":
-//                assessment = "Early onset";
-//                break;
-            default:
-                assessment = "Unknown";
-                break;
-        }
+        return diabetesAssessment(patientList.get(), riskLevel);
+    }
 
-        if (assessment.equals("None")) {
-            return patientList.get().getFirstname() + " " + patientList.get().getLastname() + " (age " + getAge(lastname) +
-                    ") diabetes assessment is: None";
-        } else if (assessment.equals("Borderline")) {
-            return patientList.get().getFirstname() + " " + patientList.get().getLastname() + " (age " + getAge(lastname) +
-                    ") diabetes assessment is: Borderline";
-        } else if (assessment.equals("In Danger")) {
-            return patientList.get().getFirstname() + " " + patientList.get().getLastname() + " (age " + getAge(lastname) +
-                    ") diabetes assessment is: In Danger";
-        }
-
-        return riskLevel;
+    private String diabetesAssessment(Patient patient, String riskLevel) {
+        int age = getAge(patient.getLastname());
+        return patient.getFirstname() + " " + patient.getLastname() + " (age " + age +
+                ") diabetes assessment is: " + riskLevel;
     }
 
     public Integer getAge(String lastname) {

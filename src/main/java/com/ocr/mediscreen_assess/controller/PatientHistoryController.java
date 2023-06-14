@@ -40,8 +40,8 @@ public class PatientHistoryController {
     }
 
     @RequestMapping(value = "Assess", method = RequestMethod.GET)
-    String getPatientByLastname(@Valid @RequestParam("lastname") String lastname) {
-       return patientHistoryService.getPatientByLastname(lastname);
+    String getAssessmentByLastname(@Valid @RequestParam("lastname") String lastname) {
+       return patientHistoryService.getAssessmentByLastname(lastname);
     }
 
 

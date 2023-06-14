@@ -15,8 +15,8 @@ import java.util.List;
 @NoArgsConstructor
 @ToString
 public class TriggerWords {
- private List<String> triggerList = new ArrayList<>(Arrays.asList("Hémoglobine A1C","Microalbumine","Taille","Poids", "Fumeur","Anormal",
- "Cholestérol","Vertige","Rechute","Réaction","Anticorps"));
+ private List<String> triggerList = new ArrayList<>(Arrays.asList("Hémoglobine A1C","Hemoglobin A1C", "Microalbumine","Taille","Poids","Smoker", "Fumeur","Abnormal",
+ "Cholesterol","Vertige","Dizziness","Rechute","Reaction","Anticorps","Antibodies", "réaction"));
 
  public List<String> getTriggerList() {
   return triggerList;
