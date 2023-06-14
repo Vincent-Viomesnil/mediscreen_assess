@@ -51,6 +51,8 @@ public class PatientHistoryService {
             riskLevel = "Borderline";
         } else if (danger(lastname)) {
             riskLevel = "In Danger";
+        } else if (earlyOnset(lastname)) {
+            riskLevel = "Early onset";
         }
         return diabetesAssessment(patient.get(), riskLevel);
     }
@@ -68,6 +70,8 @@ public class PatientHistoryService {
             riskLevel = "Borderline";
         } else if (danger(patient.get().getLastname())) {
             riskLevel = "In Danger";
+        } else if (earlyOnset(patient.get().getLastname())) {
+            riskLevel = "Early onset";
         }
         return diabetesAssessment(patient.get(), riskLevel);
     }
@@ -117,5 +121,23 @@ public class PatientHistoryService {
                 ||
                 ((getAge(lastname) > 30) && (triggerWordsService.findAll().getTriggerList().stream()
                         .filter(trigger -> patientHistory.getNotes().contains(trigger)).count() == 6));
+    }
+
+    private boolean earlyOnset(String lastname) {
+        PatientHistory patientHistory = microserviceNotesProxy.getPatientHistoryByLastname(lastname);
+        Optional<Patient> patientList = microservicePatientProxy.getPatientByLastname(lastname);
+        return ((getAge(lastname) < 30) &&
+                (patientList.get().getGender().equals("M")
+                        &&
+                        triggerWordsService.findAll().getTriggerList().stream()
+                                .filter(trigger -> patientHistory.getNotes().contains(trigger)).count() == 5)
+                ||
+                (patientList.get().getGender().equals("F")
+                        &&
+                        triggerWordsService.findAll().getTriggerList().stream()
+                                .filter(trigger -> patientHistory.getNotes().contains(trigger)).count() == 7))
+                ||
+                ((getAge(lastname) > 30) && (triggerWordsService.findAll().getTriggerList().stream()
+                        .filter(trigger -> patientHistory.getNotes().contains(trigger)).count() >= 8));
     }
 }

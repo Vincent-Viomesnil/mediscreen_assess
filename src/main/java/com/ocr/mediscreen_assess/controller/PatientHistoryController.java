@@ -19,10 +19,7 @@ import java.util.Optional;
 @RestController
 public class PatientHistoryController {
 
-    @Autowired
-    private TriggerWordsService triggerWordsService;
-
-    private final MicroserviceNotesProxy microserviceNotesProxy;
+     private final MicroserviceNotesProxy microserviceNotesProxy;
     private final MicroservicePatientProxy microservicePatientProxy;
 
     @Autowired
