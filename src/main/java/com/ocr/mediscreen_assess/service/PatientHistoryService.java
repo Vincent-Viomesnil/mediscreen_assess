@@ -40,8 +40,8 @@ public class PatientHistoryService {
     }
 
     public String getAssessmentByLastname(String lastname) {
-        PatientHistory patientHistory = microserviceNotesProxy.getPatientHistoryByLastname(lastname);
-        Optional<Patient> patientList = microservicePatientProxy.getPatientByLastname(lastname);
+//        PatientHistory patientHistory = microserviceNotesProxy.getPatientHistoryByLastname(lastname);
+        Optional<Patient> patient = microservicePatientProxy.getPatientByLastname(lastname);
         String riskLevel = "Unknown"; // Niveau de risque initial par défaut
         // Attention aux triggerWords français et anglais.
 
@@ -52,34 +52,23 @@ public class PatientHistoryService {
         } else if (danger(lastname)) {
             riskLevel = "In Danger";
         }
-        return diabetesAssessment(patientList.get(), riskLevel);
+        return diabetesAssessment(patient.get(), riskLevel);
     }
 
 
     public String getAssessmentById(Long patId) {
-        PatientHistory patientHistory = microserviceNotesProxy.getPatientByPatId(patId);
+//        PatientHistory patientHistory = microserviceNotesProxy.getPatientByPatId(patId);
         Optional<Patient> patient = microservicePatientProxy.getPatientById(patId);
-
         String riskLevel = "Unknown"; // Niveau de risque initial par défaut
-
         // Attention aux triggerWords français et anglais.
 
-        boolean containTriggerWord = triggerWordsService.findAll().getTriggerList().stream()
-                .noneMatch(trigger -> patientHistory.getNotes().contains(trigger));
-        boolean borderline = triggerWordsService.findAll().getTriggerList().stream()
-                .filter(trigger -> patientHistory.getNotes().contains(trigger)).count() == 2 || getAge(patientHistory.getLastname()) < 30;
-        boolean danger = triggerWordsService.findAll().getTriggerList().stream()
-                .filter(trigger -> patientHistory.getNotes().contains(trigger)).count() == 3;
-
-        if (containTriggerWord) {
+        if (noneMatch(patient.get().getLastname())) {
             riskLevel = "None";
-        } else if (borderline) {
+        } else if (borderline(patient.get().getLastname())) {
             riskLevel = "Borderline";
-        } else if (danger) {
+        } else if (danger(patient.get().getLastname())) {
             riskLevel = "In Danger";
         }
-
-
         return diabetesAssessment(patient.get(), riskLevel);
     }
 
