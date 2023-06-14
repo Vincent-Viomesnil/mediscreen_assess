@@ -43,38 +43,15 @@ public class PatientHistoryService {
         PatientHistory patientHistory = microserviceNotesProxy.getPatientHistoryByLastname(lastname);
         Optional<Patient> patientList = microservicePatientProxy.getPatientByLastname(lastname);
         String riskLevel = "Unknown"; // Niveau de risque initial par défaut
-
         // Attention aux triggerWords français et anglais.
 
-        boolean containTriggerWord = triggerWordsService.findAll().getTriggerList().stream()
-                .noneMatch(trigger -> patientHistory.getNotes().contains(trigger));
-        boolean borderline = triggerWordsService.findAll().getTriggerList().stream()
-                .filter(trigger -> patientHistory.getNotes().contains(trigger)).count() == 2 && (getAge(lastname)) > 30;
-        boolean danger =
-                ((getAge(lastname) < 30) &&
-                        (patientList.get().getGender().equals("M")
-                                &&
-                                triggerWordsService.findAll().getTriggerList().stream()
-                                        .filter(trigger -> patientHistory.getNotes().contains(trigger)).count() == 3)
-                        ||
-                        (patientList.get().getGender().equals("F")
-                                &&
-                                triggerWordsService.findAll().getTriggerList().stream()
-                                        .filter(trigger -> patientHistory.getNotes().contains(trigger)).count() == 4))
-                        ||
-                        ((getAge(lastname) > 30) && (triggerWordsService.findAll().getTriggerList().stream()
-                                .filter(trigger -> patientHistory.getNotes().contains(trigger)).count() == 6));
-
-
-        if (containTriggerWord) {
+        if (noneMatch(lastname)) {
             riskLevel = "None";
-        } else if (borderline) {
+        } else if (borderline(lastname)) {
             riskLevel = "Borderline";
-        } else if (danger) {
+        } else if (danger(lastname)) {
             riskLevel = "In Danger";
         }
-
-
         return diabetesAssessment(patientList.get(), riskLevel);
     }
 
@@ -119,5 +96,37 @@ public class PatientHistoryService {
         LocalDate now = LocalDate.now();
         Period period = Period.between(birthdate, now);
         return period.getYears();
+    }
+
+    private boolean noneMatch(String lastname) {
+        PatientHistory patientHistory = microserviceNotesProxy.getPatientHistoryByLastname(lastname);
+        return triggerWordsService.findAll().getTriggerList().stream()
+                .noneMatch(trigger -> patientHistory.getNotes().contains(trigger));
+    }
+
+
+    private boolean borderline(String lastname) {
+        PatientHistory patientHistory = microserviceNotesProxy.getPatientHistoryByLastname(lastname);
+        return triggerWordsService.findAll().getTriggerList().stream()
+                .filter(trigger -> patientHistory.getNotes().contains(trigger)).count() == 2 && (getAge(lastname)) > 30;
+    }
+
+
+    private boolean danger(String lastname) {
+        PatientHistory patientHistory = microserviceNotesProxy.getPatientHistoryByLastname(lastname);
+        Optional<Patient> patientList = microservicePatientProxy.getPatientByLastname(lastname);
+        return ((getAge(lastname) < 30) &&
+                (patientList.get().getGender().equals("M")
+                        &&
+                        triggerWordsService.findAll().getTriggerList().stream()
+                                .filter(trigger -> patientHistory.getNotes().contains(trigger)).count() == 3)
+                ||
+                (patientList.get().getGender().equals("F")
+                        &&
+                        triggerWordsService.findAll().getTriggerList().stream()
+                                .filter(trigger -> patientHistory.getNotes().contains(trigger)).count() == 4))
+                ||
+                ((getAge(lastname) > 30) && (triggerWordsService.findAll().getTriggerList().stream()
+                        .filter(trigger -> patientHistory.getNotes().contains(trigger)).count() == 6));
     }
 }
