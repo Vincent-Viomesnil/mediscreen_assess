@@ -66,4 +66,11 @@ public class PatientHistoryController {
         return patientHistory;
     }
 
+    @GetMapping(value = "PatHistory/id/{patId}")
+    PatientHistory getAssessmentByPatId(@Valid @PathVariable Long patId) {
+        return microserviceNotesProxy.getPatientByPatId(patId);
+    }
+
+
+
 }
