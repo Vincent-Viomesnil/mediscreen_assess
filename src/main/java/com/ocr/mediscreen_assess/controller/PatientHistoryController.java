@@ -1,25 +1,21 @@
 package com.ocr.mediscreen_assess.controller;
 
-import com.ocr.mediscreen_assess.model.Patient;
 import com.ocr.mediscreen_assess.model.PatientHistory;
 import com.ocr.mediscreen_assess.proxies.MicroserviceNotesProxy;
 import com.ocr.mediscreen_assess.proxies.MicroservicePatientProxy;
-import com.ocr.mediscreen_assess.service.TriggerWordsService;
+import com.ocr.mediscreen_assess.service.PatientHistoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import com.ocr.mediscreen_assess.service.PatientHistoryService;
 
 import javax.validation.Valid;
-import java.time.*;
 import java.util.List;
-import java.util.Optional;
 
 
 @RestController
 public class PatientHistoryController {
 
-     private final MicroserviceNotesProxy microserviceNotesProxy;
+    private final MicroserviceNotesProxy microserviceNotesProxy;
     private final MicroservicePatientProxy microservicePatientProxy;
 
     @Autowired
@@ -31,21 +27,21 @@ public class PatientHistoryController {
     }
 
 
-    @RequestMapping(value="/PatHistoryList", method = RequestMethod.GET)
+    @RequestMapping(value = "/PatHistoryList", method = RequestMethod.GET)
     public List<PatientHistory> patientHistoryList() {
-       return patientHistoryService.getPatientHistoryList();
+        return patientHistoryService.getPatientHistoryList();
     }
 
     @RequestMapping(value = "Assess", method = RequestMethod.GET)
     String getAssessmentByLastname(@Valid @RequestParam("lastname") String lastname) {
-       return patientHistoryService.getAssessmentByLastname(lastname);
+        return patientHistoryService.getAssessmentByLastname(lastname);
     }
 
 
-    @GetMapping(value = "Assess/id/{patId}")
-    String getAssessmentById(@Valid @PathVariable Long patId) {
-       return patientHistoryService.getAssessmentById(patId);
-    }
+//    @GetMapping(value = "Assess/id/{patId}")
+//    String getAssessmentById(@Valid @PathVariable Long patId) {
+//       return patientHistoryService.getAssessmentById(patId);
+//    }
 
 
     @PostMapping(value = "/PatHistory/add")
@@ -70,7 +66,6 @@ public class PatientHistoryController {
     PatientHistory getAssessmentByPatId(@Valid @PathVariable Long patId) {
         return microserviceNotesProxy.getPatientByPatId(patId);
     }
-
 
 
 }

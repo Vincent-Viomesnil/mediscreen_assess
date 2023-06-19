@@ -6,10 +6,7 @@ import com.ocr.mediscreen_assess.proxies.MicroserviceNotesProxy;
 import com.ocr.mediscreen_assess.proxies.MicroservicePatientProxy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
 
-import javax.validation.Valid;
 import java.time.LocalDate;
 import java.time.Period;
 import java.time.ZoneId;
@@ -41,40 +38,48 @@ public class PatientHistoryService {
 
     public String getAssessmentByLastname(String lastname) {
 //        PatientHistory patientHistory = microserviceNotesProxy.getPatientHistoryByLastname(lastname);
-        Optional<Patient> patient = microservicePatientProxy.getPatientByLastname(lastname);
+        Patient patient = microservicePatientProxy.getPatientByLastname(lastname).orElse(new Patient());
         String riskLevel = "Unknown"; // Niveau de risque initial par défaut
         // Attention aux triggerWords français et anglais.
+        PatientHistory patientHistory = microserviceNotesProxy.getPatientHistoryByLastname(lastname);
+        Integer nbTrigger = Math.toIntExact(triggerWordsService.findAll().getTriggerList().stream()
+                .filter(trigger -> patientHistory.getNotes().toLowerCase().contains(trigger.toLowerCase())).count());
+        //ToLowerCase
 
-        if (noneMatch(lastname)) {
+        Integer age = getAge(lastname);
+        String gender = patient.getGender();
+
+        if (noneMatch(nbTrigger)) {
             riskLevel = "None";
-        } else if (borderline(lastname)) {
+        } else if (borderline(nbTrigger, age)) {
             riskLevel = "Borderline";
-        } else if (danger(lastname)) {
+        } else if (danger(nbTrigger, age, gender)) {
             riskLevel = "In Danger";
-        } else if (earlyOnset(lastname)) {
+        } else if (earlyOnset(nbTrigger, age, gender)) {
             riskLevel = "Early onset";
         }
-        return diabetesAssessment(patient.get(), riskLevel);
+        return diabetesAssessment(patient, riskLevel);
     }
+    //Factorisation => externalisation
 
 
-    public String getAssessmentById(Long patId) {
-//        PatientHistory patientHistory = microserviceNotesProxy.getPatientByPatId(patId);
-        Optional<Patient> patient = microservicePatientProxy.getPatientById(patId);
-        String riskLevel = "Unknown"; // Niveau de risque initial par défaut
-        // Attention aux triggerWords français et anglais.
-
-        if (noneMatch(patient.get().getLastname())) {
-            riskLevel = "None";
-        } else if (borderline(patient.get().getLastname())) {
-            riskLevel = "Borderline";
-        } else if (danger(patient.get().getLastname())) {
-            riskLevel = "In Danger";
-        } else if (earlyOnset(patient.get().getLastname())) {
-            riskLevel = "Early onset";
-        }
-        return diabetesAssessment(patient.get(), riskLevel);
-    }
+//    public String getAssessmentById(Long patId) {
+////        PatientHistory patientHistory = microserviceNotesProxy.getPatientByPatId(patId);
+//        Optional<Patient> patient = microservicePatientProxy.getPatientById(patId);
+//        String riskLevel = "Unknown"; // Niveau de risque initial par défaut
+//        // Attention aux triggerWords français et anglais.
+//
+//        if (noneMatch(patient.get().getLastname())) {
+//            riskLevel = "None";
+//        } else if (borderline(patient.get().getLastname())) {
+//            riskLevel = "Borderline";
+//        } else if (danger(patient.get().getLastname())) {
+//            riskLevel = "In Danger";
+//        } else if (earlyOnset(patient.get().getLastname())) {
+//            riskLevel = "Early onset";
+//        }
+//        return diabetesAssessment(patient.get(), riskLevel);
+//    }
 
 
     private String diabetesAssessment(Patient patient, String riskLevel) {
@@ -91,53 +96,30 @@ public class PatientHistoryService {
         return period.getYears();
     }
 
-    private boolean noneMatch(String lastname) {
-        PatientHistory patientHistory = microserviceNotesProxy.getPatientHistoryByLastname(lastname);
-        return triggerWordsService.findAll().getTriggerList().stream()
-                .noneMatch(trigger -> patientHistory.getNotes().contains(trigger));
+    private boolean noneMatch(Integer nbTrigger) {
+        return nbTrigger == 0;
     }
 
 
-    private boolean borderline(String lastname) {
-        PatientHistory patientHistory = microserviceNotesProxy.getPatientHistoryByLastname(lastname);
-        return triggerWordsService.findAll().getTriggerList().stream()
-                .filter(trigger -> patientHistory.getNotes().contains(trigger)).count() == 2 && (getAge(lastname)) > 30;
+    private boolean borderline(Integer nbTrigger, Integer age) {
+        return nbTrigger == 2 && age > 30;
     }
 
 
-    private boolean danger(String lastname) {
-        PatientHistory patientHistory = microserviceNotesProxy.getPatientHistoryByLastname(lastname);
-        Optional<Patient> patientList = microservicePatientProxy.getPatientByLastname(lastname);
-        return ((getAge(lastname) < 30) &&
-                (patientList.get().getGender().equals("M")
-                        &&
-                        triggerWordsService.findAll().getTriggerList().stream()
-                                .filter(trigger -> patientHistory.getNotes().contains(trigger)).count() == 3)
+    private boolean danger(Integer nbTrigger, Integer age, String gender) {
+
+        return (age < 30) && (gender.equals("M") && nbTrigger == 3)
                 ||
-                (patientList.get().getGender().equals("F")
-                        &&
-                        triggerWordsService.findAll().getTriggerList().stream()
-                                .filter(trigger -> patientHistory.getNotes().contains(trigger)).count() == 4))
+                (gender.equals("F") && nbTrigger == 4)
                 ||
-                ((getAge(lastname) > 30) && (triggerWordsService.findAll().getTriggerList().stream()
-                        .filter(trigger -> patientHistory.getNotes().contains(trigger)).count() == 6));
+                (age > 30 && nbTrigger == 6);
     }
 
-    private boolean earlyOnset(String lastname) {
-        PatientHistory patientHistory = microserviceNotesProxy.getPatientHistoryByLastname(lastname);
-        Optional<Patient> patientList = microservicePatientProxy.getPatientByLastname(lastname);
-        return ((getAge(lastname) < 30) &&
-                (patientList.get().getGender().equals("M")
-                        &&
-                        triggerWordsService.findAll().getTriggerList().stream()
-                                .filter(trigger -> patientHistory.getNotes().contains(trigger)).count() == 5)
+    private boolean earlyOnset(Integer nbTrigger, Integer age, String gender) {
+        return (age < 30 && gender.equals("M") && nbTrigger == 5)
                 ||
-                (patientList.get().getGender().equals("F")
-                        &&
-                        triggerWordsService.findAll().getTriggerList().stream()
-                                .filter(trigger -> patientHistory.getNotes().contains(trigger)).count() == 7))
+                (gender.equals("F") && nbTrigger == 7)
                 ||
-                ((getAge(lastname) > 30) && (triggerWordsService.findAll().getTriggerList().stream()
-                        .filter(trigger -> patientHistory.getNotes().contains(trigger)).count() >= 8));
+                (age > 30 && nbTrigger >= 8);
     }
 }

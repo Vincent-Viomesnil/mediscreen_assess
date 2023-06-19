@@ -15,10 +15,10 @@ import java.util.List;
 @NoArgsConstructor
 @ToString
 public class TriggerWords {
- private List<String> triggerList = new ArrayList<>(Arrays.asList("Hémoglobine A1C","Hemoglobin A1C","hémoglobine A1C",
-         "Microalbumine","microalbumine","Taille","Height","Poids","Weight","Smoker", "Fumeur","fume",
-         "Abnormal","anormale","anormaux","Cholesterol","cholestérol","Vertige","vertige","Dizziness",
-         "Rechute","Reaction","réaction","Anticorps","Antibodies"));
+ private List<String> triggerList = List.of("Hémoglobine A1C","Hemoglobin A1C",
+         "Microalbumine","Microalbumin","Taille","Height","Poids", "Weight", "Smoker","Fumeur","Fume","Smoke",
+         "Abnormal","Anormale","Anormaux","Cholesterol","Cholestérol","Vertige","Dizziness",
+         "Rechute","Reaction","Réaction","Anticorps","Antibodies");
 //Adding word in french in order to adapt the behaviour
  public List<String> getTriggerList() {
   return triggerList;
