@@ -38,10 +38,10 @@ public class PatientHistoryController {
     }
 
 
-//    @GetMapping(value = "Assess/id/{patId}")
-//    String getAssessmentById(@Valid @PathVariable Long patId) {
-//       return patientHistoryService.getAssessmentById(patId);
-//    }
+    @GetMapping(value = "Assess/id/{patId}")
+    String getAssessmentById(@Valid @PathVariable Long patId) {
+        return patientHistoryService.getAssessmentById(patId);
+    }
 
 
     @PostMapping(value = "/PatHistory/add")

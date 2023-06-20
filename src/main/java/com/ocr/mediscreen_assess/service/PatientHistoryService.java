@@ -37,14 +37,12 @@ public class PatientHistoryService {
     }
 
     public String getAssessmentByLastname(String lastname) {
-//        PatientHistory patientHistory = microserviceNotesProxy.getPatientHistoryByLastname(lastname);
         Patient patient = microservicePatientProxy.getPatientByLastname(lastname).orElse(new Patient());
-        String riskLevel = "Unknown"; // Niveau de risque initial par défaut
+        String riskLevel = "Unknown";
         // Attention aux triggerWords français et anglais.
         PatientHistory patientHistory = microserviceNotesProxy.getPatientHistoryByLastname(lastname);
         Integer nbTrigger = Math.toIntExact(triggerWordsService.findAll().getTriggerList().stream()
                 .filter(trigger -> patientHistory.getNotes().toLowerCase().contains(trigger.toLowerCase())).count());
-        //ToLowerCase
 
         Integer age = getAge(lastname);
         String gender = patient.getGender();
@@ -60,26 +58,31 @@ public class PatientHistoryService {
         }
         return diabetesAssessment(patient, riskLevel);
     }
-    //Factorisation => externalisation
 
 
-//    public String getAssessmentById(Long patId) {
-////        PatientHistory patientHistory = microserviceNotesProxy.getPatientByPatId(patId);
-//        Optional<Patient> patient = microservicePatientProxy.getPatientById(patId);
-//        String riskLevel = "Unknown"; // Niveau de risque initial par défaut
-//        // Attention aux triggerWords français et anglais.
-//
-//        if (noneMatch(patient.get().getLastname())) {
-//            riskLevel = "None";
-//        } else if (borderline(patient.get().getLastname())) {
-//            riskLevel = "Borderline";
-//        } else if (danger(patient.get().getLastname())) {
-//            riskLevel = "In Danger";
-//        } else if (earlyOnset(patient.get().getLastname())) {
-//            riskLevel = "Early onset";
-//        }
-//        return diabetesAssessment(patient.get(), riskLevel);
-//    }
+    public String getAssessmentById(Long patId) {
+//        PatientHistory patientHistory = microserviceNotesProxy.getPatientByPatId(patId);
+        Patient patient = microservicePatientProxy.getPatientById(patId).orElse(new Patient());
+        String riskLevel = "Unknown"; // Niveau de risque initial par défaut
+        // Attention aux triggerWords français et anglais.
+        PatientHistory patientHistory = microserviceNotesProxy.getPatientByPatId(patId);
+        Integer nbTrigger = Math.toIntExact(triggerWordsService.findAll().getTriggerList().stream()
+                .filter(trigger -> patientHistory.getNotes().toLowerCase().contains(trigger.toLowerCase())).count());
+
+        Integer age = getAge(patient.getLastname());
+        String gender = patient.getGender();
+
+        if (noneMatch(nbTrigger)) {
+            riskLevel = "None";
+        } else if (borderline(nbTrigger, age)) {
+            riskLevel = "Borderline";
+        } else if (danger(nbTrigger, age, gender)) {
+            riskLevel = "In Danger";
+        } else if (earlyOnset(nbTrigger, age, gender)) {
+            riskLevel = "Early onset";
+        }
+        return diabetesAssessment(patient, riskLevel);
+    }
 
 
     private String diabetesAssessment(Patient patient, String riskLevel) {
