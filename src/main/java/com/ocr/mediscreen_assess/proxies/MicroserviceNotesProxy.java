@@ -1,34 +1,31 @@
 package com.ocr.mediscreen_assess.proxies;
 
-import com.ocr.mediscreen_assess.model.Patient;
-import com.ocr.mediscreen_assess.model.PatientHistory;
+import com.ocr.mediscreen_assess.model.PatientHistoryBean;
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
-import java.util.Optional;
 
 @FeignClient(name = "mediscreen-mdb", url = "localhost:8082")
 public interface MicroserviceNotesProxy {
     @GetMapping(value = "/PatHistoryList")
-    List<PatientHistory> patientHistoryList();
+    List<PatientHistoryBean> patientHistoryList();
 
     @GetMapping(value = "/PatHistory/lastname/{lastname}")
-    PatientHistory getPatientHistoryByLastname(@PathVariable("lastname") String lastname);
+    PatientHistoryBean getPatientHistoryByLastname(@PathVariable("lastname") String lastname);
 
     @PostMapping(value = "/PatHistory/add")
-    ResponseEntity<Object> addPatient(@Valid @RequestBody PatientHistory patientHistory);
+    PatientHistoryBean addPatient(@Valid @RequestBody PatientHistoryBean patientHistoryBean);
 
     @PutMapping(value = "/PatHistory/update/{lastname}")
-    PatientHistory updatePatient(@PathVariable String lastname, @RequestBody PatientHistory patientToUpdate);
+    PatientHistoryBean updatePatient(@PathVariable String lastname, @RequestBody PatientHistoryBean patientToUpdate);
 
-    @DeleteMapping(value= "/PatHistory/delete/{lastname}")
-    PatientHistory deletePatient(@PathVariable String lastname);
+    @DeleteMapping(value = "/PatHistory/delete/{lastname}")
+    PatientHistoryBean deletePatient(@PathVariable String lastname);
 
     @GetMapping(value = "/PatHistory/id/{patId}")
-    PatientHistory getPatientByPatId(@PathVariable Long patId);
+    PatientHistoryBean getPatientByPatId(@PathVariable Long patId);
 
 //    @GetMapping(value = "/PatHistory/{firstname}")
 //    Optional<PatientHistory> getPatientByFirstname(String firstname);

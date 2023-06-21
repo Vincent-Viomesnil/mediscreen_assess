@@ -1,21 +1,20 @@
 package com.ocr.mediscreen_assess.service;
 
 import com.ocr.mediscreen_assess.model.TriggerWords;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.ocr.mediscreen_assess.repository.TriggerDao;
 import org.springframework.stereotype.Service;
-import com.ocr.mediscreen_assess.repository.TriggerWordsDAO;
-
-import java.util.List;
 
 @Service
-public class TriggerWordsService {
+public class TriggerWordsService implements TriggerDao {
+    private TriggerWords triggerList = new TriggerWords(); // Liste de mots déclencheurs
 
-    @Autowired
-    private TriggerWordsDAO triggerWordsDAO;
+//    public TriggerWordsService(TriggerWords triggerList) {
+//        this.triggerList = triggerList;
+//    }
 
-    public TriggerWords findAll() {
-        return triggerWordsDAO.findAll();
+    @Override
+    public TriggerWords findAllTriggers() {
+        return triggerList;
     }
-
 
 }

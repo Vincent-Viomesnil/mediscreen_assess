@@ -1,7 +1,7 @@
 package com.ocr.mediscreen_assess.service;
 
-import com.ocr.mediscreen_assess.model.Patient;
-import com.ocr.mediscreen_assess.model.PatientHistory;
+import com.ocr.mediscreen_assess.model.PatientBean;
+import com.ocr.mediscreen_assess.model.PatientHistoryBean;
 import com.ocr.mediscreen_assess.proxies.MicroserviceNotesProxy;
 import com.ocr.mediscreen_assess.proxies.MicroservicePatientProxy;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,21 +31,21 @@ public class PatientHistoryService {
     }
 
 
-    public List<PatientHistory> getPatientHistoryList() {
-        List<PatientHistory> patientList = microserviceNotesProxy.patientHistoryList();
+    public List<PatientHistoryBean> getPatientHistoryList() {
+        List<PatientHistoryBean> patientList = microserviceNotesProxy.patientHistoryList();
         return patientList;
     }
 
     public String getAssessmentByLastname(String lastname) {
-        Patient patient = microservicePatientProxy.getPatientByLastname(lastname).orElse(new Patient());
+        PatientBean patientBean = microservicePatientProxy.getPatientByLastname(lastname).orElse(new PatientBean());
         String riskLevel = "Unknown";
         // Attention aux triggerWords français et anglais.
-        PatientHistory patientHistory = microserviceNotesProxy.getPatientHistoryByLastname(lastname);
-        Integer nbTrigger = Math.toIntExact(triggerWordsService.findAll().getTriggerList().stream()
-                .filter(trigger -> patientHistory.getNotes().toLowerCase().contains(trigger.toLowerCase())).count());
+        PatientHistoryBean patientHistoryBean = microserviceNotesProxy.getPatientHistoryByLastname(lastname);
+        Integer nbTrigger = Math.toIntExact(triggerWordsService.findAllTriggers().getTriggerList().stream()
+                .filter(trigger -> patientHistoryBean.getNotes().toLowerCase().contains(trigger.toLowerCase())).count());
 
         Integer age = getAge(lastname);
-        String gender = patient.getGender();
+        String gender = patientBean.getGender();
 
         if (noneMatch(nbTrigger)) {
             riskLevel = "None";
@@ -56,21 +56,21 @@ public class PatientHistoryService {
         } else if (earlyOnset(nbTrigger, age, gender)) {
             riskLevel = "Early onset";
         }
-        return diabetesAssessment(patient, riskLevel);
+        return diabetesAssessment(patientBean, riskLevel);
     }
 
 
     public String getAssessmentById(Long patId) {
 //        PatientHistory patientHistory = microserviceNotesProxy.getPatientByPatId(patId);
-        Patient patient = microservicePatientProxy.getPatientById(patId).orElse(new Patient());
+        PatientBean patientBean = microservicePatientProxy.getPatientById(patId).orElse(new PatientBean());
         String riskLevel = "Unknown"; // Niveau de risque initial par défaut
         // Attention aux triggerWords français et anglais.
-        PatientHistory patientHistory = microserviceNotesProxy.getPatientByPatId(patId);
-        Integer nbTrigger = Math.toIntExact(triggerWordsService.findAll().getTriggerList().stream()
-                .filter(trigger -> patientHistory.getNotes().toLowerCase().contains(trigger.toLowerCase())).count());
+        PatientHistoryBean patientHistoryBean = microserviceNotesProxy.getPatientByPatId(patId);
+        Integer nbTrigger = Math.toIntExact(triggerWordsService.findAllTriggers().getTriggerList().stream()
+                .filter(trigger -> patientHistoryBean.getNotes().toLowerCase().contains(trigger.toLowerCase())).count());
 
-        Integer age = getAge(patient.getLastname());
-        String gender = patient.getGender();
+        Integer age = getAge(patientBean.getLastname());
+        String gender = patientBean.getGender();
 
         if (noneMatch(nbTrigger)) {
             riskLevel = "None";
@@ -81,18 +81,18 @@ public class PatientHistoryService {
         } else if (earlyOnset(nbTrigger, age, gender)) {
             riskLevel = "Early onset";
         }
-        return diabetesAssessment(patient, riskLevel);
+        return diabetesAssessment(patientBean, riskLevel);
     }
 
 
-    private String diabetesAssessment(Patient patient, String riskLevel) {
-        int age = getAge(patient.getLastname());
-        return patient.getFirstname() + " " + patient.getLastname() + " (age " + age +
+    private String diabetesAssessment(PatientBean patientBean, String riskLevel) {
+        int age = getAge(patientBean.getLastname());
+        return patientBean.getFirstname() + " " + patientBean.getLastname() + " (age " + age +
                 ") diabetes assessment is: " + riskLevel;
     }
 
     public Integer getAge(String lastname) {
-        Optional<Patient> patient = microservicePatientProxy.getPatientByLastname(lastname);
+        Optional<PatientBean> patient = microservicePatientProxy.getPatientByLastname(lastname);
         LocalDate birthdate = patient.get().getBirthdate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
         LocalDate now = LocalDate.now();
         Period period = Period.between(birthdate, now);
