@@ -44,8 +44,8 @@ public class PatientHistoryController {
 
 
     @PostMapping(value = "/PatHistory/add")
-    public PatientHistory addPatient(@RequestBody PatientHistory patientHistory) {
-        PatientHistory patientAdded = microserviceNotesProxy.addPatient(patientHistory);
+    public PatientHistory addPatientHistory(@RequestBody PatientHistory patientHistory) {
+        PatientHistory patientAdded = microserviceNotesProxy.addPatientHistory(patientHistory);
         return patientAdded;
     }
 

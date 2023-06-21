@@ -16,7 +16,7 @@ public interface MicroserviceNotesProxy {
     PatientHistory getPatientHistoryByLastname(@PathVariable("lastname") String lastname);
 
     @PostMapping(value = "/PatHistory/add")
-    PatientHistory addPatient(@Valid @RequestBody PatientHistory patientHistory);
+    PatientHistory addPatientHistory(@Valid @RequestBody PatientHistory patientHistory);
 
     @RequestMapping(value = "PatHistory/update", method = RequestMethod.PUT)
     PatientHistory updatePatientByLastname(@RequestParam("lastname") String lastname, @RequestBody PatientHistory patientToUpdate);

@@ -56,13 +56,13 @@ public class PatientController {
     }
 
     @PutMapping(value = "/Patient/update/{id}")
-    Patient updatePatient(@PathVariable Long id, @RequestBody Patient patientToUpdate) {
+    public Patient updatePatient(@PathVariable Long id, @RequestBody Patient patientToUpdate) {
         Patient patient = microservicePatientProxy.updatePatientById(id, patientToUpdate);
         return patient;
     }
 
     @DeleteMapping(value = "/Patient/delete/{id}")
-    Patient deletePatient(@PathVariable Long id) {
+    public Patient deletePatient(@PathVariable Long id) {
         Patient patient = microservicePatientProxy.deletePatientById(id);
         return patient;
     }
