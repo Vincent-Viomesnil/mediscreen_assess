@@ -31,6 +31,11 @@ public class PatientController {
         return patient;
     }
 
+    @GetMapping(value = "Patient/id/{id}")
+    Optional<Patient> getPatientById(@Valid @PathVariable("id") Long id) {
+        Optional<Patient> patient = microservicePatientProxy.getPatientById(id);
+        return patient;
+    }
 
     @PostMapping(value = "/Patient/add")
     Patient addPatient(@RequestBody Patient patient) {
