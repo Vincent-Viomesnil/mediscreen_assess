@@ -49,15 +49,27 @@ public class PatientHistoryController {
         return patientAdded;
     }
 
-    @PutMapping(value = "/PatHistory/update/{lastname}")
-    PatientHistory updatePatient(@PathVariable String lastname, @RequestBody PatientHistory patientToUpdate) {
-        PatientHistory patientHistory = microserviceNotesProxy.updatePatient(lastname, patientToUpdate);
+    @RequestMapping(value = "PatHistory/update", method = RequestMethod.PUT)
+    public PatientHistory updatePatientByLastname(@RequestParam("lastname") String lastname, @RequestBody PatientHistory patientToUpdate) {
+        PatientHistory patientHistory = microserviceNotesProxy.updatePatientByLastname(lastname, patientToUpdate);
         return patientHistory;
     }
 
-    @DeleteMapping(value = "/PatHistory/delete/{lastname}")
-    PatientHistory deletePatient(@PathVariable String lastname) {
-        PatientHistory patientHistory = microserviceNotesProxy.deletePatient(lastname);
+    @PutMapping(value = "/PatHistory/update/{patId}")
+    PatientHistory updatePatientById(@PathVariable Long patId, @RequestBody PatientHistory patientToUpdate) {
+        PatientHistory patientHistory = microserviceNotesProxy.updatePatientById(patId, patientToUpdate);
+        return patientHistory;
+    }
+
+    @RequestMapping(value = "PatHistory/delete", method = RequestMethod.DELETE)
+    public PatientHistory deletePatientByLastname(@RequestParam("lastname") String lastname) {
+        PatientHistory patientHistory = microserviceNotesProxy.deletePatientByLastname(lastname);
+        return patientHistory;
+    }
+
+    @DeleteMapping(value = "/PatHistory/delete/{patId}")
+    PatientHistory deletePatientById(@PathVariable Long patId) {
+        PatientHistory patientHistory = microserviceNotesProxy.deletePatientById(patId);
         return patientHistory;
     }
 

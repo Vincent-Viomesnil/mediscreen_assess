@@ -18,18 +18,20 @@ public interface MicroserviceNotesProxy {
     @PostMapping(value = "/PatHistory/add")
     PatientHistory addPatient(@Valid @RequestBody PatientHistory patientHistory);
 
-    @PutMapping(value = "/PatHistory/update/{lastname}")
-    PatientHistory updatePatient(@PathVariable String lastname, @RequestBody PatientHistory patientToUpdate);
+    @RequestMapping(value = "PatHistory/update", method = RequestMethod.PUT)
+    PatientHistory updatePatientByLastname(@RequestParam("lastname") String lastname, @RequestBody PatientHistory patientToUpdate);
 
-    @DeleteMapping(value = "/PatHistory/delete/{lastname}")
-    PatientHistory deletePatient(@PathVariable String lastname);
+    @RequestMapping(value = "PatHistory/delete", method = RequestMethod.DELETE)
+    PatientHistory deletePatientByLastname(@RequestParam("lastname") String lastname);
 
     @GetMapping(value = "/PatHistory/id/{patId}")
     PatientHistory getPatientByPatId(@PathVariable Long patId);
 
-//    @GetMapping(value = "/PatHistory/{firstname}")
-//    Optional<PatientHistory> getPatientByFirstname(String firstname);
+    @DeleteMapping(value = "/PatHistory/delete/{patId}")
+    PatientHistory deletePatientById(@PathVariable Long patId);
 
-//    @GetMapping(value = "assess/{firstname}")
-//    Optional<PatientHistory> getPatientByFirstname(@Valid @RequestParam("firstname") String firstname);
+    @PutMapping(value = "/PatHistory/update/{patId}")
+    PatientHistory updatePatientById(@PathVariable Long patId, @RequestBody PatientHistory patientToUpdate);
+
+
 }

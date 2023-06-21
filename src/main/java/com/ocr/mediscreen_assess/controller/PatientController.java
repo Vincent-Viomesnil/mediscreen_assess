@@ -43,15 +43,27 @@ public class PatientController {
         return patientAdded;
     }
 
-    @PutMapping(value = "/Patient/update/{lastname}")
-    Patient updatePatient(@PathVariable String lastname, @RequestBody Patient patientToUpdate) {
-        Patient patient = microservicePatientProxy.updatePatient(lastname, patientToUpdate);
+    @RequestMapping(value = "Patient/update", method = RequestMethod.PUT)
+    public Patient updatePatientByLastname(@RequestParam("lastname") String lastname, @RequestBody Patient patientToUpdate) {
+        Patient patient = microservicePatientProxy.updatePatientByLastname(lastname, patientToUpdate);
         return patient;
     }
 
-    @DeleteMapping(value = "/Patient/delete/{lastname}")
-    Patient deletePatient(@PathVariable String lastname) {
-        Patient patient = microservicePatientProxy.deletePatient(lastname);
+    @RequestMapping(value = "Patient/delete", method = RequestMethod.DELETE)
+    public Patient deletePatientByLastname(@RequestParam("lastname") String lastname) {
+        Patient patient = microservicePatientProxy.deletePatientByLastname(lastname);
+        return patient;
+    }
+
+    @PutMapping(value = "/Patient/update/{id}")
+    Patient updatePatient(@PathVariable Long id, @RequestBody Patient patientToUpdate) {
+        Patient patient = microservicePatientProxy.updatePatientById(id, patientToUpdate);
+        return patient;
+    }
+
+    @DeleteMapping(value = "/Patient/delete/{id}")
+    Patient deletePatient(@PathVariable Long id) {
+        Patient patient = microservicePatientProxy.deletePatientById(id);
         return patient;
     }
 }

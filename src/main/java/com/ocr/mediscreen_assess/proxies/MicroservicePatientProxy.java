@@ -19,12 +19,18 @@ public interface MicroservicePatientProxy {
     @PostMapping(value = "/Patient/add")
     Patient addPatient(@Valid @RequestBody Patient patient);
 
-    @PutMapping(value = "/Patient/update/{lastname}")
-    Patient updatePatient(@PathVariable String lastname, @RequestBody Patient patientToUpdate);
+    @RequestMapping(value = "Patient/update", method = RequestMethod.PUT)
+    Patient updatePatientByLastname(@RequestParam("lastname") String lastname, @RequestBody Patient patientToUpdate);
 
-    @DeleteMapping(value = "/Patient/delete/{lastname}")
-    Patient deletePatient(@PathVariable String lastname);
+    @PutMapping(value = "/Patient/update/{id}")
+    Patient updatePatientById(@PathVariable Long id, @RequestBody Patient patientToUpdate);
 
-    @GetMapping(value = "Patient/id/{Id}")
-    Optional<Patient> getPatientById(@PathVariable Long Id);
+    @RequestMapping(value = "Patient/delete", method = RequestMethod.DELETE)
+    Patient deletePatientByLastname(@RequestParam("lastname") String lastname);
+
+    @DeleteMapping(value = "/Patient/delete/{id}")
+    Patient deletePatientById(@PathVariable Long id);
+
+    @GetMapping(value = "Patient/id/{id}")
+    Optional<Patient> getPatientById(@PathVariable Long id);
 }
