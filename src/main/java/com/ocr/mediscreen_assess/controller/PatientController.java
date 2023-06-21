@@ -1,6 +1,6 @@
 package com.ocr.mediscreen_assess.controller;
 
-import com.ocr.mediscreen_assess.model.PatientBean;
+import com.ocr.mediscreen_assess.model.Patient;
 import com.ocr.mediscreen_assess.proxies.MicroservicePatientProxy;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,33 +20,33 @@ public class PatientController {
     }
 
     @RequestMapping(value = "/Patients", method = RequestMethod.GET)
-    public List<PatientBean> getPatientList() {
-        List<PatientBean> patientBeanList = microservicePatientProxy.patientList();
-        return patientBeanList;
+    public List<Patient> getPatientList() {
+        List<Patient> patientList = microservicePatientProxy.patientList();
+        return patientList;
     }
 
     @GetMapping(value = "Patient/{lastname}")
-    Optional<PatientBean> getPatientByLastname(@Valid @PathVariable("lastname") String lastname) {
-        Optional<PatientBean> patient = microservicePatientProxy.getPatientByLastname(lastname);
+    Optional<Patient> getPatientByLastname(@Valid @PathVariable("lastname") String lastname) {
+        Optional<Patient> patient = microservicePatientProxy.getPatientByLastname(lastname);
         return patient;
     }
 
 
     @PostMapping(value = "/Patient/add")
-    PatientBean addPatient(@RequestBody PatientBean patientBean) {
-        PatientBean patientBeanAdded = microservicePatientProxy.addPatient(patientBean);
-        return patientBeanAdded;
+    Patient addPatient(@RequestBody Patient patient) {
+        Patient patientAdded = microservicePatientProxy.addPatient(patient);
+        return patientAdded;
     }
 
     @PutMapping(value = "/Patient/update/{lastname}")
-    PatientBean updatePatient(@PathVariable String lastname, @RequestBody PatientBean patientBeanToUpdate) {
-        PatientBean patientBean = microservicePatientProxy.updatePatient(lastname, patientBeanToUpdate);
-        return patientBean;
+    Patient updatePatient(@PathVariable String lastname, @RequestBody Patient patientToUpdate) {
+        Patient patient = microservicePatientProxy.updatePatient(lastname, patientToUpdate);
+        return patient;
     }
 
     @DeleteMapping(value = "/Patient/delete/{lastname}")
-    PatientBean deletePatient(@PathVariable String lastname) {
-        PatientBean patientBean = microservicePatientProxy.deletePatient(lastname);
-        return patientBean;
+    Patient deletePatient(@PathVariable String lastname) {
+        Patient patient = microservicePatientProxy.deletePatient(lastname);
+        return patient;
     }
 }

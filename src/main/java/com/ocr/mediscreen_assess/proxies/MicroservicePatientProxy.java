@@ -1,6 +1,6 @@
 package com.ocr.mediscreen_assess.proxies;
 
-import com.ocr.mediscreen_assess.model.PatientBean;
+import com.ocr.mediscreen_assess.model.Patient;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
 
@@ -11,20 +11,20 @@ import java.util.Optional;
 @FeignClient(name = "mediscreen", url = "localhost:8081")
 public interface MicroservicePatientProxy {
     @GetMapping(value = "/Patients")
-    List<PatientBean> patientList();
+    List<Patient> patientList();
 
     @GetMapping(value = "/Patient/lastname/{lastname}")
-    Optional<PatientBean> getPatientByLastname(@Valid @PathVariable("lastname") String lastname);
+    Optional<Patient> getPatientByLastname(@Valid @PathVariable("lastname") String lastname);
 
     @PostMapping(value = "/Patient/add")
-    PatientBean addPatient(@Valid @RequestBody PatientBean patientBean);
+    Patient addPatient(@Valid @RequestBody Patient patient);
 
     @PutMapping(value = "/Patient/update/{lastname}")
-    PatientBean updatePatient(@PathVariable String lastname, @RequestBody PatientBean patientBeanToUpdate);
+    Patient updatePatient(@PathVariable String lastname, @RequestBody Patient patientToUpdate);
 
     @DeleteMapping(value = "/Patient/delete/{lastname}")
-    PatientBean deletePatient(@PathVariable String lastname);
+    Patient deletePatient(@PathVariable String lastname);
 
     @GetMapping(value = "Patient/id/{Id}")
-    Optional<PatientBean> getPatientById(@PathVariable Long Id);
+    Optional<Patient> getPatientById(@PathVariable Long Id);
 }

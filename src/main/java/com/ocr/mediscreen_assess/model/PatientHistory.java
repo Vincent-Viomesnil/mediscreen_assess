@@ -11,7 +11,7 @@ import org.bson.types.ObjectId;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class PatientHistoryBean {
+public class PatientHistory {
 
     private ObjectId _id;
 

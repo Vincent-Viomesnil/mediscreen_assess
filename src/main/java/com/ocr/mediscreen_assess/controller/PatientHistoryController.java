@@ -1,6 +1,6 @@
 package com.ocr.mediscreen_assess.controller;
 
-import com.ocr.mediscreen_assess.model.PatientHistoryBean;
+import com.ocr.mediscreen_assess.model.PatientHistory;
 import com.ocr.mediscreen_assess.proxies.MicroserviceNotesProxy;
 import com.ocr.mediscreen_assess.proxies.MicroservicePatientProxy;
 import com.ocr.mediscreen_assess.service.PatientHistoryService;
@@ -27,7 +27,7 @@ public class PatientHistoryController {
 
 
     @RequestMapping(value = "/PatHistoryList", method = RequestMethod.GET)
-    public List<PatientHistoryBean> patientHistoryList() {
+    public List<PatientHistory> patientHistoryList() {
         return patientHistoryService.getPatientHistoryList();
     }
 
@@ -44,25 +44,25 @@ public class PatientHistoryController {
 
 
     @PostMapping(value = "/PatHistory/add")
-    public PatientHistoryBean addPatient(@RequestBody PatientHistoryBean patientHistoryBean) {
-        PatientHistoryBean patientAdded = microserviceNotesProxy.addPatient(patientHistoryBean);
+    public PatientHistory addPatient(@RequestBody PatientHistory patientHistory) {
+        PatientHistory patientAdded = microserviceNotesProxy.addPatient(patientHistory);
         return patientAdded;
     }
 
     @PutMapping(value = "/PatHistory/update/{lastname}")
-    PatientHistoryBean updatePatient(@PathVariable String lastname, @RequestBody PatientHistoryBean patientToUpdate) {
-        PatientHistoryBean patientHistoryBean = microserviceNotesProxy.updatePatient(lastname, patientToUpdate);
-        return patientHistoryBean;
+    PatientHistory updatePatient(@PathVariable String lastname, @RequestBody PatientHistory patientToUpdate) {
+        PatientHistory patientHistory = microserviceNotesProxy.updatePatient(lastname, patientToUpdate);
+        return patientHistory;
     }
 
     @DeleteMapping(value = "/PatHistory/delete/{lastname}")
-    PatientHistoryBean deletePatient(@PathVariable String lastname) {
-        PatientHistoryBean patientHistoryBean = microserviceNotesProxy.deletePatient(lastname);
-        return patientHistoryBean;
+    PatientHistory deletePatient(@PathVariable String lastname) {
+        PatientHistory patientHistory = microserviceNotesProxy.deletePatient(lastname);
+        return patientHistory;
     }
 
     @GetMapping(value = "PatHistory/id/{patId}")
-    PatientHistoryBean getAssessmentByPatId(@Valid @PathVariable Long patId) {
+    PatientHistory getAssessmentByPatId(@Valid @PathVariable Long patId) {
         return microserviceNotesProxy.getPatientByPatId(patId);
     }
 
