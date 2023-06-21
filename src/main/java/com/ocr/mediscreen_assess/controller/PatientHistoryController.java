@@ -56,7 +56,7 @@ public class PatientHistoryController {
     }
 
     @PutMapping(value = "/PatHistory/update/{patId}")
-    PatientHistory updatePatientById(@PathVariable Long patId, @RequestBody PatientHistory patientToUpdate) {
+    public PatientHistory updatePatientById(@PathVariable Long patId, @RequestBody PatientHistory patientToUpdate) {
         PatientHistory patientHistory = microserviceNotesProxy.updatePatientById(patId, patientToUpdate);
         return patientHistory;
     }
@@ -68,13 +68,13 @@ public class PatientHistoryController {
     }
 
     @DeleteMapping(value = "/PatHistory/delete/{patId}")
-    PatientHistory deletePatientById(@PathVariable Long patId) {
+    public PatientHistory deletePatientById(@PathVariable Long patId) {
         PatientHistory patientHistory = microserviceNotesProxy.deletePatientById(patId);
         return patientHistory;
     }
 
     @GetMapping(value = "PatHistory/id/{patId}")
-    PatientHistory getAssessmentByPatId(@Valid @PathVariable Long patId) {
+    public PatientHistory getAssessmentByPatId(@Valid @PathVariable Long patId) {
         return microserviceNotesProxy.getPatientByPatId(patId);
     }
 
