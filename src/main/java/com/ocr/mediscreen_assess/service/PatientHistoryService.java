@@ -38,8 +38,8 @@ public class PatientHistoryService {
         String riskLevel = "Unknown";
         // Attention aux triggerWords français et anglais.
         PatientHistory patientHistory = microserviceNotesProxy.getPatientHistoryByLastname(lastname);
-        if (patientHistory == null) {
-            System.out.println("patientHistory is null");
+        if (patientHistory == null || patient == null) {
+            System.out.println("patientHistory is null:" + patientHistory + "patient is null :" + patient);
             return "patientHistory is null";
         }
 
@@ -70,7 +70,8 @@ public class PatientHistoryService {
         PatientHistory patientHistory = microserviceNotesProxy.getPatientByPatId(patId);
 
         if (patientHistory == null) {
-            System.out.println("patientHistory is null");
+            System.out.println("patientHistory is null:" + patientHistory + "patient is null :" + patient);
+
             return "patientHistory is null";
         }
         Integer nbTrigger = Math.toIntExact(triggerWordsService.findAllTriggers().getTriggerList().stream()
