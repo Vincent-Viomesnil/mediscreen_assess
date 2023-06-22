@@ -16,6 +16,9 @@ public interface MicroservicePatientProxy {
     @GetMapping(value = "/Patient/lastname/{lastname}")
     Optional<Patient> getPatientByLastname(@Valid @PathVariable("lastname") String lastname);
 
+    @GetMapping(value = "Patient/id/{id}")
+    Optional<Patient> getPatientById(@PathVariable Long id);
+
     @PostMapping(value = "/Patient/add")
     Patient addPatient(@Valid @RequestBody Patient patient);
 
@@ -31,6 +34,5 @@ public interface MicroservicePatientProxy {
     @DeleteMapping(value = "/Patient/delete/{id}")
     Patient deletePatientById(@PathVariable Long id);
 
-    @GetMapping(value = "Patient/id/{id}")
-    Optional<Patient> getPatientById(@PathVariable Long id);
+
 }

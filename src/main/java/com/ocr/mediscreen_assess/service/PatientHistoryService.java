@@ -4,21 +4,18 @@ import com.ocr.mediscreen_assess.model.Patient;
 import com.ocr.mediscreen_assess.model.PatientHistory;
 import com.ocr.mediscreen_assess.proxies.MicroserviceNotesProxy;
 import com.ocr.mediscreen_assess.proxies.MicroservicePatientProxy;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.Period;
 import java.time.ZoneId;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class PatientHistoryService {
 
 
-    @Autowired
-    private TriggerWordsService triggerWordsService;
+    private TriggerWordsService triggerWordsService = new TriggerWordsService();
 
 
     private final MicroserviceNotesProxy microserviceNotesProxy;
@@ -41,6 +38,11 @@ public class PatientHistoryService {
         String riskLevel = "Unknown";
         // Attention aux triggerWords français et anglais.
         PatientHistory patientHistory = microserviceNotesProxy.getPatientHistoryByLastname(lastname);
+        if (patientHistory == null) {
+            System.out.println("patientHistory is null");
+            return "patientHistory is null";
+        }
+
         Integer nbTrigger = Math.toIntExact(triggerWordsService.findAllTriggers().getTriggerList().stream()
                 .filter(trigger -> patientHistory.getNotes().toLowerCase().contains(trigger.toLowerCase())).count());
 
@@ -66,6 +68,11 @@ public class PatientHistoryService {
         String riskLevel = "Unknown"; // Niveau de risque initial par défaut
         // Attention aux triggerWords français et anglais.
         PatientHistory patientHistory = microserviceNotesProxy.getPatientByPatId(patId);
+
+        if (patientHistory == null) {
+            System.out.println("patientHistory is null");
+            return "patientHistory is null";
+        }
         Integer nbTrigger = Math.toIntExact(triggerWordsService.findAllTriggers().getTriggerList().stream()
                 .filter(trigger -> patientHistory.getNotes().toLowerCase().contains(trigger.toLowerCase())).count());
 
@@ -92,8 +99,8 @@ public class PatientHistoryService {
     }
 
     public Integer getAge(String lastname) {
-        Optional<Patient> patient = microservicePatientProxy.getPatientByLastname(lastname);
-        LocalDate birthdate = patient.get().getBirthdate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        Patient patient = microservicePatientProxy.getPatientByLastname(lastname).orElse(new Patient());
+        LocalDate birthdate = patient.getBirthdate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
         LocalDate now = LocalDate.now();
         Period period = Period.between(birthdate, now);
         return period.getYears();
