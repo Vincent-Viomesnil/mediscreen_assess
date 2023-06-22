@@ -8,8 +8,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -30,8 +30,8 @@ public class PatientControllerTest {
     public void setUp() {
         MockitoAnnotations.openMocks(this);
         patientList = new ArrayList<>();
-        patientList.add(new Patient(1L, "firstname", "firstname", new Date(), "F", "address", "0102030405"));
-        patientList.add(new Patient(2L, "lastname", "lastname", new Date(), "F", "address", "1234567890"));
+        patientList.add(new Patient(1L, "firstname", "firstname", LocalDate.of(2000, 01, 01), "F", "address", "0102030405"));
+        patientList.add(new Patient(2L, "lastname", "lastname", LocalDate.of(2000, 01, 01), "F", "address", "1234567890"));
     }
 
     @Test
@@ -52,7 +52,7 @@ public class PatientControllerTest {
     public void testGetPatientByLastname() {
         // Arrange
         String lastname = "last";
-        Optional<Patient> patient = Optional.of(new Patient(1L, "firstname", "last", new Date(), "F", "address", "0102030405"));
+        Optional<Patient> patient = Optional.of(new Patient(1L, "firstname", "last", LocalDate.of(2000, 01, 01), "F", "address", "0102030405"));
         when(microservicePatientProxy.getPatientByLastname(lastname)).thenReturn(patient);
 
         // Act
@@ -84,7 +84,7 @@ public class PatientControllerTest {
     public void testGetPatientByIdt() {
         // Arrange
         Long id = 1L;
-        Optional<Patient> patient = Optional.of(new Patient(1L, "firstname", "last", new Date(), "F", "address", "0102030405"));
+        Optional<Patient> patient = Optional.of(new Patient(1L, "firstname", "last", LocalDate.of(2000, 01, 01), "F", "address", "0102030405"));
         when(microservicePatientProxy.getPatientById(id)).thenReturn(patient);
 
         // Act
@@ -115,7 +115,7 @@ public class PatientControllerTest {
     @Test
     public void testAddPatientValidPatient() {
         // Arrange
-        Patient patient = new Patient(1L, "firstname", "last", new Date(), "F", "address", "0102030405");
+        Patient patient = new Patient(1L, "firstname", "last", LocalDate.of(2000, 01, 01), "F", "address", "0102030405");
         when(microservicePatientProxy.addPatient(patient)).thenReturn(patient);
 
         // Act
@@ -131,8 +131,8 @@ public class PatientControllerTest {
     public void testUpdatePatientByLastname() {
         // Arrange
         String lastname = "firstname";
-        Patient patientToUpdate = new Patient(1L, "firstname", "firstname", new Date(), "F", "address", "0102030405");
-        Patient updatedPatient = new Patient(1L, "updated", "updated", new Date(), "F", "address", "0102030405");
+        Patient patientToUpdate = new Patient(1L, "firstname", "firstname", LocalDate.of(2000, 01, 01), "F", "address", "0102030405");
+        Patient updatedPatient = new Patient(1L, "updated", "updated", LocalDate.of(2000, 01, 01), "F", "address", "0102030405");
         when(microservicePatientProxy.updatePatientByLastname(lastname, patientToUpdate)).thenReturn(updatedPatient);
 
         // Act
@@ -148,7 +148,7 @@ public class PatientControllerTest {
     public void testDeletePatientByLastname() {
         // Arrange
         String lastname = "lastname";
-        Patient deletedPatient = new Patient(1L, "firstname", "firstname", new Date(), "F", "address", "0102030405");
+        Patient deletedPatient = new Patient(1L, "firstname", "firstname", LocalDate.of(2000, 01, 01), "F", "address", "0102030405");
         when(microservicePatientProxy.deletePatientByLastname(lastname)).thenReturn(deletedPatient);
 
         // Act

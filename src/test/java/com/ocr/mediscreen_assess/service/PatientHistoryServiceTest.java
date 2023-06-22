@@ -12,9 +12,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import java.time.LocalDate;
-import java.time.ZoneId;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -63,8 +61,7 @@ public class PatientHistoryServiceTest {
         patient.setFirstname("John");
         patient.setLastname("Doe");
         LocalDate specificDate = LocalDate.of(1987, 6, 21);
-        Date date = Date.from(specificDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
-        patient.setBirthdate(date);
+        patient.setBirthdate(specificDate);
         patient.setPhonenumber("0123456789");
         patient.setAddress("Address");
         patient.setId(1L);

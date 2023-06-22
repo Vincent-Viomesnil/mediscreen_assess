@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.Period;
-import java.time.ZoneId;
 import java.util.List;
 
 @Service
@@ -101,7 +100,7 @@ public class PatientHistoryService {
 
     public Integer getAge(String lastname) {
         Patient patient = microservicePatientProxy.getPatientByLastname(lastname).orElse(new Patient());
-        LocalDate birthdate = patient.getBirthdate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        LocalDate birthdate = patient.getBirthdate();
         LocalDate now = LocalDate.now();
         Period period = Period.between(birthdate, now);
         return period.getYears();
