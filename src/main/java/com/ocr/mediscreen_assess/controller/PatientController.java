@@ -32,7 +32,7 @@ public class PatientController {
     }
 
     @GetMapping(value = "Patient/id/{id}")
-    public Optional<Patient> getPatientById(@Valid @PathVariable("id") Long id) {
+    public Optional<Patient> getPatientById(@Valid @PathVariable Long id) {
         Optional<Patient> patient = microservicePatientProxy.getPatientById(id);
         return patient;
     }
