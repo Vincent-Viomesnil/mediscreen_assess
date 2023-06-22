@@ -8,10 +8,6 @@ import org.springframework.stereotype.Service;
 public class TriggerWordsService implements TriggerDao {
     private TriggerWords triggerList = new TriggerWords(); // Liste de mots déclencheurs
 
-//    public TriggerWordsService(TriggerWords triggerList) {
-//        this.triggerList = triggerList;
-//    }
-
     @Override
     public TriggerWords findAllTriggers() {
         return triggerList;
