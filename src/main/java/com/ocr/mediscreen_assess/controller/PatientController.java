@@ -26,19 +26,19 @@ public class PatientController {
     }
 
     @GetMapping(value = "Patient/{lastname}")
-    Optional<Patient> getPatientByLastname(@Valid @PathVariable("lastname") String lastname) {
+    public Optional<Patient> getPatientByLastname(@Valid @PathVariable("lastname") String lastname) {
         Optional<Patient> patient = microservicePatientProxy.getPatientByLastname(lastname);
         return patient;
     }
 
     @GetMapping(value = "Patient/id/{id}")
-    Optional<Patient> getPatientById(@Valid @PathVariable("id") Long id) {
+    public Optional<Patient> getPatientById(@Valid @PathVariable("id") Long id) {
         Optional<Patient> patient = microservicePatientProxy.getPatientById(id);
         return patient;
     }
 
     @PostMapping(value = "/Patient/add")
-    Patient addPatient(@RequestBody Patient patient) {
+    public Patient addPatient(@RequestBody Patient patient) {
         Patient patientAdded = microservicePatientProxy.addPatient(patient);
         return patientAdded;
     }

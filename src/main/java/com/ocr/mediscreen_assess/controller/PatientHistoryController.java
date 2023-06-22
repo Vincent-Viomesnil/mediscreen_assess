@@ -32,13 +32,13 @@ public class PatientHistoryController {
     }
 
     @RequestMapping(value = "Assess", method = RequestMethod.GET)
-    String getAssessmentByLastname(@Valid @RequestParam("lastname") String lastname) {
+    public String getAssessmentByLastname(@Valid @RequestParam("lastname") String lastname) {
         return patientHistoryService.getAssessmentByLastname(lastname);
     }
 
 
     @GetMapping(value = "Assess/id/{patId}")
-    String getAssessmentById(@Valid @PathVariable Long patId) {
+    public String getAssessmentById(@Valid @PathVariable Long patId) {
         return patientHistoryService.getAssessmentById(patId);
     }
 
