@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.Period;
+import java.util.List;
 
 @Service
 public class PatientHistoryService {
@@ -23,10 +24,10 @@ public class PatientHistoryService {
     private MicroservicePatientProxy microservicePatientProxy;
 
 
-//    public List<PatientHistoryBean> getPatientHistoryList() {
-//        List<PatientHistoryBean> patientList = microserviceNotesProxy.patientHistoryList();
-//        return patientList;
-//    }
+    public List<PatientHistoryBean> getPatientHistoryList() {
+        List<PatientHistoryBean> patientList = microserviceNotesProxy.patientHistoryList();
+        return patientList;
+    }
 
     public String getAssessmentByLastname(String lastname) {
         PatientBean patient = microservicePatientProxy.getPatientByLastname(lastname);
@@ -126,5 +127,9 @@ public class PatientHistoryService {
                 (gender.equals("F") && nbTrigger == 7)
                 ||
                 (age > 30 && nbTrigger >= 8);
+    }
+
+    public PatientHistoryBean getPatientByPatId(Long patId) {
+        return microserviceNotesProxy.getPatientByPatId(patId);
     }
 }
