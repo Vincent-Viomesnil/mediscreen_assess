@@ -17,11 +17,6 @@ public class PatientController {
     @Autowired
     private MicroservicePatientProxy microservicePatientProxy;
 
-
-    public PatientController(MicroservicePatientProxy microservicePatientProxy) {
-        this.microservicePatientProxy = microservicePatientProxy;
-    }
-
     @RequestMapping(value = "/Patients", method = RequestMethod.GET)
     public List<Patient> getPatientList() {
         List<Patient> patientList = microservicePatientProxy.patientList();
