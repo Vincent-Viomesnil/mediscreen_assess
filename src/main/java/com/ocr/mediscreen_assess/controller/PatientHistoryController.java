@@ -2,6 +2,7 @@ package com.ocr.mediscreen_assess.controller;
 
 import com.ocr.mediscreen_assess.model.PatientHistory;
 import com.ocr.mediscreen_assess.proxies.MicroserviceNotesProxy;
+import com.ocr.mediscreen_assess.proxies.MicroservicePatientProxy;
 import com.ocr.mediscreen_assess.service.PatientHistoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -13,11 +14,16 @@ import java.util.List;
 @RestController
 public class PatientHistoryController {
 
-    @Autowired
-    private MicroserviceNotesProxy microserviceNotesProxy;
+    private final MicroserviceNotesProxy microserviceNotesProxy;
+    private final MicroservicePatientProxy microservicePatientProxy;
 
     @Autowired
     private PatientHistoryService patientHistoryService;
+
+    public PatientHistoryController(MicroserviceNotesProxy microserviceNotesProxy, MicroservicePatientProxy microservicePatientProxy) {
+        this.microserviceNotesProxy = microserviceNotesProxy;
+        this.microservicePatientProxy = microservicePatientProxy;
+    }
 
 
     @RequestMapping(value = "/PatHistoryList", method = RequestMethod.GET)

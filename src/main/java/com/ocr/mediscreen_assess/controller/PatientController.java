@@ -2,7 +2,6 @@ package com.ocr.mediscreen_assess.controller;
 
 import com.ocr.mediscreen_assess.model.Patient;
 import com.ocr.mediscreen_assess.proxies.MicroservicePatientProxy;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -13,9 +12,12 @@ import java.util.Optional;
 @RestController
 public class PatientController {
 
+    private final MicroservicePatientProxy microservicePatientProxy;
 
-    @Autowired
-    private MicroservicePatientProxy microservicePatientProxy;
+
+    public PatientController(MicroservicePatientProxy microservicePatientProxy) {
+        this.microservicePatientProxy = microservicePatientProxy;
+    }
 
     @RequestMapping(value = "/Patients", method = RequestMethod.GET)
     public List<Patient> getPatientList() {
