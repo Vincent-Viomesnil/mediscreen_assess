@@ -14,8 +14,10 @@ import java.util.List;
 @RestController
 public class PatientHistoryController {
 
-    private final MicroserviceNotesProxy microserviceNotesProxy;
-    private final MicroservicePatientProxy microservicePatientProxy;
+    @Autowired
+    private MicroserviceNotesProxy microserviceNotesProxy;
+    @Autowired
+    private MicroservicePatientProxy microservicePatientProxy;
 
     @Autowired
     private PatientHistoryService patientHistoryService;
