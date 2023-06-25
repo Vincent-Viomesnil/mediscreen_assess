@@ -8,6 +8,7 @@ import com.ocr.mediscreen_assess.proxies.MicroservicePatientProxy;
 import org.bson.types.ObjectId;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
@@ -28,14 +29,19 @@ public class PatientHistoryServiceTest {
     private MicroserviceNotesProxy microserviceNotesProxy;
 
     @Mock
-    private TriggerWordsService triggerWordsService;
+    private TriggerWords triggerWords;
 
+    @InjectMocks
     private PatientHistoryService patientHistoryService;
 
     @BeforeEach
     public void setup() {
         MockitoAnnotations.openMocks(this);
-        patientHistoryService = new PatientHistoryService(microserviceNotesProxy, microservicePatientProxy);
+        triggerWords = new TriggerWords();
+        triggerWords.setTriggerList(List.of("Hémoglobine A1C", "Hemoglobin A1C",
+                "Microalbumine", "Microalbumin", "Taille", "Height", "Poids", "Weight", "Smoker", "Fumeur", "Fume", "Smoke",
+                "Abnormal", "Anormale", "Anormaux", "Cholesterol", "Cholestérol", "Vertige", "Dizziness",
+                "Rechute", "Reaction", "Réaction", "Anticorps", "Antibodies"));
     }
 
     @Test
@@ -75,8 +81,6 @@ public class PatientHistoryServiceTest {
 
         when(microservicePatientProxy.getPatientByLastname(lastname)).thenReturn(Optional.of(patient));
         when(microserviceNotesProxy.getPatientHistoryByLastname(lastname)).thenReturn(patientHistory);
-        when(triggerWordsService.findAllTriggers()).thenReturn(createMockTriggerWords());
-
 
         // Act
         String result = patientHistoryService.getAssessmentByLastname("Doe");

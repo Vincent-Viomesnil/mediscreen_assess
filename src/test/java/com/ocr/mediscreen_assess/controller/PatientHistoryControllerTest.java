@@ -4,7 +4,6 @@ import com.ocr.mediscreen_assess.model.PatientHistory;
 import com.ocr.mediscreen_assess.proxies.MicroserviceNotesProxy;
 import com.ocr.mediscreen_assess.proxies.MicroservicePatientProxy;
 import com.ocr.mediscreen_assess.service.PatientHistoryService;
-import com.ocr.mediscreen_assess.service.TriggerWordsService;
 import org.bson.types.ObjectId;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -26,9 +25,6 @@ public class PatientHistoryControllerTest {
 
     @Mock
     private MicroservicePatientProxy microservicePatientProxy;
-
-    @Mock
-    private TriggerWordsService triggerWordsService;
 
     @Mock
     private PatientHistoryService patientHistoryService;

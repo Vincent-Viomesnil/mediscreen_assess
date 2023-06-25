@@ -2,8 +2,10 @@ package com.ocr.mediscreen_assess.service;
 
 import com.ocr.mediscreen_assess.model.Patient;
 import com.ocr.mediscreen_assess.model.PatientHistory;
+import com.ocr.mediscreen_assess.model.TriggerWords;
 import com.ocr.mediscreen_assess.proxies.MicroserviceNotesProxy;
 import com.ocr.mediscreen_assess.proxies.MicroservicePatientProxy;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -14,17 +16,13 @@ import java.util.List;
 public class PatientHistoryService {
 
 
-    private TriggerWordsService triggerWordsService = new TriggerWordsService();
+    private TriggerWords triggerWords = new TriggerWords();
 
 
-    private final MicroserviceNotesProxy microserviceNotesProxy;
-    private final MicroservicePatientProxy microservicePatientProxy;
-
-
-    public PatientHistoryService(MicroserviceNotesProxy microserviceNotesProxy, MicroservicePatientProxy microservicePatientProxy) {
-        this.microserviceNotesProxy = microserviceNotesProxy;
-        this.microservicePatientProxy = microservicePatientProxy;
-    }
+    @Autowired
+    private MicroserviceNotesProxy microserviceNotesProxy;
+    @Autowired
+    private MicroservicePatientProxy microservicePatientProxy;
 
 
     public List<PatientHistory> getPatientHistoryList() {
@@ -42,7 +40,7 @@ public class PatientHistoryService {
             return "patientHistory is null";
         }
 
-        Integer nbTrigger = Math.toIntExact(triggerWordsService.findAllTriggers().getTriggerList().stream()
+        Integer nbTrigger = Math.toIntExact(triggerWords.getTriggerList().stream()
                 .filter(trigger -> patientHistory.getNotes().toLowerCase().contains(trigger.toLowerCase())).count());
 
         Integer age = getAge(lastname);
@@ -73,7 +71,7 @@ public class PatientHistoryService {
 
             return "patientHistory is null";
         }
-        Integer nbTrigger = Math.toIntExact(triggerWordsService.findAllTriggers().getTriggerList().stream()
+        Integer nbTrigger = Math.toIntExact(triggerWords.getTriggerList().stream()
                 .filter(trigger -> patientHistory.getNotes().toLowerCase().contains(trigger.toLowerCase())).count());
 
         Integer age = getAge(patient.getLastname());
