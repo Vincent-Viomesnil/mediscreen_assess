@@ -4,28 +4,19 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.bson.types.ObjectId;
 
-import java.time.LocalDate;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class Patient {
+public class PatientHistoryBean {
 
+    private ObjectId _id;
 
-    private Long id;
-
-    private String firstname;
-
+    private Long patId;
     private String lastname;
-
-    private LocalDate birthdate;
-
-    private String gender;
-
-    private String address;
-    private String phonenumber;
-
+    private String notes;
 }
 
