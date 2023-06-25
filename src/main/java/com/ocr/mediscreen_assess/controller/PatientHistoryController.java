@@ -35,4 +35,10 @@ public class PatientHistoryController {
         return patientHistoryService.getPatientByPatId(patId);
     }
 
+    @PostMapping(value = "/PatHistory/add")
+    PatientHistoryBean addPatientHistory(@RequestBody PatientHistoryBean patientHistory) {
+        return patientHistoryService.addPatientHistory(patientHistory);
+    }
+
+
 }

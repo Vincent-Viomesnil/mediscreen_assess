@@ -132,4 +132,8 @@ public class PatientHistoryService {
     public PatientHistoryBean getPatientByPatId(Long patId) {
         return microserviceNotesProxy.getPatientByPatId(patId);
     }
+
+    public PatientHistoryBean addPatientHistory(PatientHistoryBean patientHistory) {
+        return microserviceNotesProxy.addPatientHistory(patientHistory);
+    }
 }
