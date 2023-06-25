@@ -25,8 +25,7 @@ public class PatientHistoryService {
 
 
     public List<PatientHistoryBean> getPatientHistoryList() {
-        List<PatientHistoryBean> patientList = microserviceNotesProxy.patientHistoryList();
-        return patientList;
+        return microserviceNotesProxy.patientHistoryList();
     }
 
     public String getAssessmentByLastname(String lastname) {
@@ -135,5 +134,26 @@ public class PatientHistoryService {
 
     public PatientHistoryBean addPatientHistory(PatientHistoryBean patientHistory) {
         return microserviceNotesProxy.addPatientHistory(patientHistory);
+    }
+
+    public PatientHistoryBean deletePatientById(Long patId) {
+        return microserviceNotesProxy.deletePatientById(patId);
+    }
+
+
+    public PatientHistoryBean updatePatientById(Long patId, PatientHistoryBean patientToUpdate) {
+        return microserviceNotesProxy.updatePatientById(patId, patientToUpdate);
+    }
+
+    public List<PatientBean> getPatientList() {
+        return microservicePatientProxy.patientList();
+    }
+
+    public PatientBean addPatient(PatientBean patient) {
+        return microservicePatientProxy.addPatient(patient);
+    }
+
+    public PatientBean deletePatient(Long id) {
+        return microservicePatientProxy.deletePatient(id);
     }
 }

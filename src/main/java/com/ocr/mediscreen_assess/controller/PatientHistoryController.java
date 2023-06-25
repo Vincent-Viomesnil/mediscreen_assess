@@ -1,5 +1,6 @@
 package com.ocr.mediscreen_assess.controller;
 
+import com.ocr.mediscreen_assess.model.PatientBean;
 import com.ocr.mediscreen_assess.model.PatientHistoryBean;
 import com.ocr.mediscreen_assess.service.PatientHistoryService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,5 +41,29 @@ public class PatientHistoryController {
         return patientHistoryService.addPatientHistory(patientHistory);
     }
 
+    @DeleteMapping(value = "/PatHistory/delete/{patId}")
+    PatientHistoryBean deletePatientById(@PathVariable Long patId) {
+        return patientHistoryService.deletePatientById(patId);
+    }
+
+    @PutMapping(value = "/PatHistory/update/{patId}")
+    PatientHistoryBean updatePatientById(@PathVariable Long patId, @RequestBody PatientHistoryBean patientToUpdate) {
+        return patientHistoryService.updatePatientById(patId, patientToUpdate);
+    }
+
+    @GetMapping(value = "/Patients")
+    List<PatientBean> patientList() {
+        return patientHistoryService.getPatientList();
+    }
+
+    @PostMapping(value = "/Patient/add")
+    PatientBean addPatient(@RequestBody PatientBean patient) {
+        return patientHistoryService.addPatient(patient);
+    }
+
+    @DeleteMapping(value = "/Patient/delete/{id}")
+    PatientBean deletePatient(@PathVariable Long id) {
+        return patientHistoryService.deletePatient(id);
+    }
 
 }

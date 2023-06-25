@@ -2,9 +2,7 @@ package com.ocr.mediscreen_assess.proxies;
 
 import com.ocr.mediscreen_assess.model.PatientHistoryBean;
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -21,4 +19,10 @@ public interface MicroserviceNotesProxy {
 
     @PostMapping(value = "/PatHistory/add")
     PatientHistoryBean addPatientHistory(PatientHistoryBean patientHistory);
+
+    @DeleteMapping(value = "/PatHistory/delete/{patId}")
+    PatientHistoryBean deletePatientById(@PathVariable Long patId);
+
+    @PutMapping(value = "/PatHistory/update/{patId}")
+    PatientHistoryBean updatePatientById(@PathVariable Long patId, @RequestBody PatientHistoryBean patientToUpdate);
 }
