@@ -12,6 +12,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
 import java.time.Period;
+import java.util.List;
 
 @Service
 public class AssessmentService {
@@ -26,17 +27,20 @@ public class AssessmentService {
 
     public String getAssessmentById(Long patId) {
         PatientBean patient = microservicePatientProxy.getPatientById(patId);
-//        String riskLevel = "Unknown"; // Niveau de risque initial par défaut
-//        // Attention aux triggerWords français et anglais.
-        PatientHistoryBean patientHistory = microserviceNotesProxy.getPatientByPatId(patId);
+        List<PatientHistoryBean> patientHistoryList = microserviceNotesProxy.getListNotesByPatId(patId);
 
-        if (patient == null) {
+        if (patient == null || patId == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Patient  not found !");
         }
         String riskLevel = "Unknown";
+        int nbTrigger = 0;
 
-        Integer nbTrigger = Math.toIntExact(triggerWords.getTriggerList().stream()
-                .filter(trigger -> patientHistory.getNotes().toLowerCase().contains(trigger.toLowerCase())).count());
+        for (PatientHistoryBean patientHistory : patientHistoryList) {
+            long count = triggerWords.getTriggerList().stream()
+                    .filter(trigger -> patientHistory.getNotes().toLowerCase().contains(trigger.toLowerCase()))
+                    .count();
+            nbTrigger += count;
+        }
 
         Integer age = getAge(patient.getBirthdate());
         String gender = patient.getGender();
@@ -70,11 +74,9 @@ public class AssessmentService {
         return nbTrigger == 0;
     }
 
-
     private boolean borderline(Integer nbTrigger, Integer age) {
         return nbTrigger == 2 && age > 30;
     }
-
 
     private boolean danger(Integer nbTrigger, Integer age, String gender) {
 
