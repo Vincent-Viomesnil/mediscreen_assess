@@ -37,7 +37,6 @@
 //        Optional<PatientBean> patient = microservicePatientProxy.getPatientById(id);
 //        return patient;
 //    }
-//
 //    @PostMapping(value = "/Patient/add")
 //    public PatientBean addPatient(@RequestBody PatientBean patient) {
 //        PatientBean patientAdded = microservicePatientProxy.addPatient(patient);
