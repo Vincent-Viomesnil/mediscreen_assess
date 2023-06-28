@@ -2,7 +2,7 @@
 
 FROM eclipse-temurin:17-jdk-alpine
 
-WORKDIR /patient_assess
+WORKDIR /patientassess
 
 COPY .mvn/ .mvn
 COPY mvnw pom.xml ./
