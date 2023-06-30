@@ -106,7 +106,7 @@ public class AssessmentServiceTest {
 
         List<PatientHistoryBean> patientHistoryList = new ArrayList<>() {{
             add(new PatientHistoryBean() {{
-                setNotes("Smoke");
+                setNotes("Smoker");
             }});
             add(new PatientHistoryBean() {{
                 setNotes("Abnormal");
@@ -141,7 +141,7 @@ public class AssessmentServiceTest {
 
         List<PatientHistoryBean> patientHistoryList = new ArrayList<>() {{
             add(new PatientHistoryBean() {{
-                setNotes("Smoke");
+                setNotes("Smoker");
             }});
             add(new PatientHistoryBean() {{
                 setNotes("Abnormal");
