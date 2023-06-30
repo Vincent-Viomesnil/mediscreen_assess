@@ -12,7 +12,7 @@ import java.util.List;
 @ToString
 public class TriggerWords {
     private List<String> triggerList = List.of("Hémoglobine A1C", "Hemoglobin A1C",
-            "Microalbumine", "Microalbumin", "Taille", "Height", "Poids", "Weight", "Smoker", "Fumeur", "Fume", "Smoke",
+            "Microalbumine", "Microalbumin", "Taille", "Height", "Poids", "Weight", "Smoker", "Fumeur", "Fume",
             "Abnormal", "Anormale", "Anormaux", "Cholesterol", "Cholestérol", "Vertige", "Dizziness",
             "Rechute", "Reaction", "Réaction", "Anticorps", "Antibodies");
 

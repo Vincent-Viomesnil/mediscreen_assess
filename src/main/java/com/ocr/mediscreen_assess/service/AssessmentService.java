@@ -47,7 +47,7 @@ public class AssessmentService {
 
         if (noneMatch(nbTrigger)) {
             riskLevel = "None";
-        } else if (borderline(nbTrigger, age)) {
+        } else if (borderline(nbTrigger, age, gender)) {
             riskLevel = "Borderline";
         } else if (danger(nbTrigger, age, gender)) {
             riskLevel = "In Danger";
@@ -55,6 +55,7 @@ public class AssessmentService {
             riskLevel = "Early onset";
         }
         return diabetesAssessment(patient, riskLevel);
+
     }
 
 
@@ -74,24 +75,25 @@ public class AssessmentService {
         return nbTrigger == 0;
     }
 
-    private boolean borderline(Integer nbTrigger, Integer age) {
-        return nbTrigger == 2 && age > 30;
+    private boolean borderline(Integer nbTrigger, Integer age, String gender) {
+        return nbTrigger == 2 && gender.equals("F") || gender.equals("M") && age > 30;
     }
 
     private boolean danger(Integer nbTrigger, Integer age, String gender) {
 
-        return (age < 30) && (gender.equals("M") && nbTrigger == 3)
+        return (age < 30) && (gender.equals("M")) && (nbTrigger == 3)
                 ||
-                (gender.equals("F") && nbTrigger == 4)
+                (gender.equals("F")) && (nbTrigger == 4)
                 ||
-                (age > 30 && nbTrigger == 6);
+                (age >= 30) && (nbTrigger == 6);
     }
 
     private boolean earlyOnset(Integer nbTrigger, Integer age, String gender) {
-        return (age < 30 && gender.equals("M") && nbTrigger == 5)
+        return (age < 30) && (gender.equals("M")) && (nbTrigger == 5)
                 ||
-                (gender.equals("F") && nbTrigger == 7)
+                (gender.equals("F")) && (nbTrigger == 7)
                 ||
-                (age > 30 && nbTrigger >= 8);
+                (age <= 30) && (gender.equals("F")) || (gender.equals("M")) && (nbTrigger >= 8);
     }
+
 }
