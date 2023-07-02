@@ -1,11 +1,23 @@
 package com.ocr.mediscreen_assess.model;
 
-import java.util.ArrayList;
-import java.util.Arrays;
+import lombok.*;
+
 import java.util.List;
 
-public class TriggerWords {
-    List<String> triggerList = new ArrayList<>(Arrays.asList("Hémoglobine A1C","Microalbumine","Taille","Poids", "Fumeur","Anormal",
- "Cholestérol","Vertige","Rechute","Réaction","Anticorps"));
 
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@ToString
+public class TriggerWords {
+    private List<String> triggerList = List.of("Hémoglobine A1C", "Hemoglobin A1C",
+            "Microalbumine", "Microalbumin", "Taille", "Height", "Poids", "Weight", "Smoker", "Fumeur", "Fume",
+            "Abnormal", "Anormale", "Anormaux", "Cholesterol", "Cholestérol", "Vertige", "Dizziness",
+            "Rechute", "Reaction", "Réaction", "Anticorps", "Antibodies");
+
+    //Adding word in french in order to adapt the behaviour
+    public List<String> getTriggerList() {
+        return triggerList;
+    }
 }
