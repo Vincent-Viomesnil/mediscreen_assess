@@ -130,7 +130,7 @@ public class AssessmentServiceTest {
     }
 
     @Test
-    public void testGetAssessmentById_EarlyOnSet() {
+    public void testGetAssessmentById_EarlyOnSet_FirstCase() {
         // Arrange
         Long patId = 1L;
         PatientBean patient = new PatientBean();
@@ -168,6 +168,106 @@ public class AssessmentServiceTest {
 
         // Assert
         assertEquals("John Doe (age 23) diabetes assessment is: Early onset", result);
+        verify(microservicePatientProxy, times(1)).getPatientById(patId);
+        verify(microserviceNotesProxy, times(1)).getListNotesByPatId(patId);
+    }
+
+    @Test
+    public void testGetAssessmentById_EarlyOnSet_SecondCase() {
+        // Arrange
+        Long patId = 1L;
+        PatientBean patient = new PatientBean();
+        patient.setFirstname("Lea");
+        patient.setLastname("James");
+        patient.setBirthdate(LocalDate.of(2000, 1, 1));
+        patient.setGender("F");
+
+        List<PatientHistoryBean> patientHistoryList = new ArrayList<>() {{
+            add(new PatientHistoryBean() {{
+                setNotes("Smoker");
+            }});
+            add(new PatientHistoryBean() {{
+                setNotes("Abnormal");
+            }});
+            add(new PatientHistoryBean() {{
+                setNotes("Reaction");
+            }});
+            add(new PatientHistoryBean() {{
+                setNotes("Antibodies");
+            }});
+
+            add(new PatientHistoryBean() {{
+                setNotes("Weight");
+            }});
+            add(new PatientHistoryBean() {{
+                setNotes("Height");
+            }});
+            add(new PatientHistoryBean() {{
+                setNotes("Dizziness");
+            }});
+
+        }};
+
+
+        when(microservicePatientProxy.getPatientById(patId)).thenReturn(patient);
+        when(microserviceNotesProxy.getListNotesByPatId(patId)).thenReturn(patientHistoryList);
+
+        // Act
+        String result = assessmentService.getAssessmentById(patId);
+
+        // Assert
+        assertEquals("Lea James (age 23) diabetes assessment is: Early onset", result);
+        verify(microservicePatientProxy, times(1)).getPatientById(patId);
+        verify(microserviceNotesProxy, times(1)).getListNotesByPatId(patId);
+    }
+
+    @Test
+    public void testGetAssessmentById_EarlyOnSet_ThirdCase() {
+        // Arrange
+        Long patId = 1L;
+        PatientBean patient = new PatientBean();
+        patient.setFirstname("Lea");
+        patient.setLastname("James");
+        patient.setBirthdate(LocalDate.of(2000, 1, 1));
+        patient.setGender("F");
+
+        List<PatientHistoryBean> patientHistoryList = new ArrayList<>() {{
+            add(new PatientHistoryBean() {{
+                setNotes("Smoker");
+            }});
+            add(new PatientHistoryBean() {{
+                setNotes("Abnormal");
+            }});
+            add(new PatientHistoryBean() {{
+                setNotes("Reaction");
+            }});
+            add(new PatientHistoryBean() {{
+                setNotes("Antibodies");
+            }});
+
+            add(new PatientHistoryBean() {{
+                setNotes("Weight");
+            }});
+            add(new PatientHistoryBean() {{
+                setNotes("Height");
+            }});
+            add(new PatientHistoryBean() {{
+                setNotes("Dizziness");
+            }});
+            add(new PatientHistoryBean() {{
+                setNotes("Microalbumin");
+            }});
+        }};
+
+
+        when(microservicePatientProxy.getPatientById(patId)).thenReturn(patient);
+        when(microserviceNotesProxy.getListNotesByPatId(patId)).thenReturn(patientHistoryList);
+
+        // Act
+        String result = assessmentService.getAssessmentById(patId);
+
+        // Assert
+        assertEquals("Lea James (age 23) diabetes assessment is: Early onset", result);
         verify(microservicePatientProxy, times(1)).getPatientById(patId);
         verify(microserviceNotesProxy, times(1)).getListNotesByPatId(patId);
     }
